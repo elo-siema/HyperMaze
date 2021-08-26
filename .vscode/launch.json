@@ -7,15 +7,15 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug executable 'hypercasterv2'",
+            "name": "Debug executable 'hypermaze'",
             "cargo": {
                 "args": [
                     "build",
-                    "--bin=hypercasterv2",
-                    "--package=hypercasterv2"
+                    "--bin=hypermaze",
+                    "--package=hypermaze"
                 ],
                 "filter": {
-                    "name": "hypercasterv2",
+                    "name": "hypermaze",
                     "kind": "bin"
                 }
             },
@@ -25,16 +25,16 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug unit tests in executable 'hypercasterv2'",
+            "name": "Debug unit tests in executable 'hypermaze'",
             "cargo": {
                 "args": [
                     "test",
                     "--no-run",
-                    "--bin=hypercasterv2",
-                    "--package=hypercasterv2"
+                    "--bin=hypermaze",
+                    "--package=hypermaze"
                 ],
                 "filter": {
-                    "name": "hypercasterv2",
+                    "name": "hypermaze",
                     "kind": "bin"
                 }
             },

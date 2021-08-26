@@ -1,7 +1,27 @@
-use macroquad::prelude::*;
+mod constants;
+mod game;
+mod hyperbolic_renderer;
+mod poincare_renderer;
+mod utils;
 
-#[macroquad::main("BasicShapes")]
+use macroquad::prelude::*;
+use constants::*;
+
+fn window_conf() -> Conf {
+    Conf {
+        window_title: "HyperCaster".to_owned(),
+        window_width: GAME_SIZE_X,
+        window_height: GAME_SIZE_Y,
+        ..Default::default()
+    }
+}
+
+#[macroquad::main(window_conf)]
 async fn main() {
+
+
+    let mut top_down_view = false;
+
     loop {
         clear_background(RED);
 

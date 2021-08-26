@@ -7,9 +7,9 @@ cargo build --target wasm32-unknown-emscripten --verbose
 rm -rf static
 mkdir static
 
-cp target/wasm32-unknown-emscripten/debug/hypercasterv2.wasm -t static
-cp target/wasm32-unknown-emscripten/debug/hypercasterv2.wasm.map -t static
-cp target/wasm32-unknown-emscripten/debug/hypercasterv2.js -t static
+cp target/wasm32-unknown-emscripten/debug/hypermaze.wasm -t static
+cp target/wasm32-unknown-emscripten/debug/hypermaze.wasm.map -t static
+cp target/wasm32-unknown-emscripten/debug/hypermaze.js -t static
 cp html/index.html -t static
 cp js/mq-js-bundle.js -t static
 cp js/audio.js -t static
