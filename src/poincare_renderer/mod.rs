@@ -1,5 +1,4 @@
 use crate::utils::color::RGBColor;
-use crate::window::canvas::Canvas;
 use crate::{game::Game, utils::poincarepoint::PoincareWall};
 use line_drawing::Bresenham;
 
@@ -46,7 +45,7 @@ impl TopDownRenderer {
     ///
     /// # Parameters:
     ///		- canvas		The canvas that should be drawn to.
-    pub fn render(&self, canvas: &mut Canvas, game: &Game) {
+    pub fn render(&self, game: &Game) {
         //draw walls:
         game
             .map
@@ -54,32 +53,32 @@ impl TopDownRenderer {
             .iter()
             .map(|w| w.clone().into())
             .for_each(|wall: PoincareWall| {
-                self.draw_wall(&wall, canvas);
+                //self.draw_wall(&wall, canvas);
             });
     }
 
-    /// Draws wall as a line on the Poincare disk model.
-    fn draw_wall(&self, wall: &PoincareWall, canvas: &mut Canvas) {
-        let start =
-            self.translate_to_canvas_coords(wall.beginning.0[0], wall.beginning.0[1], canvas);
-        let end = self.translate_to_canvas_coords(wall.end.0[0], wall.end.0[1], canvas);
+    // Draws wall as a line on the Poincare disk model.
+    //fn draw_wall(&self, wall: &PoincareWall) {
+    //    let start =
+    //        self.translate_to_canvas_coords(wall.beginning.0[0], wall.beginning.0[1], canvas);
+    //    let end = self.translate_to_canvas_coords(wall.end.0[0], wall.end.0[1], canvas);
+//
+    //    for (x, y) in Bresenham::new(start, end) {
+    //        canvas.draw_pixel(x as usize, y as usize, &wall.color);
+    //    }
+    //}
 
-        for (x, y) in Bresenham::new(start, end) {
-            canvas.draw_pixel(x as usize, y as usize, &wall.color);
-        }
-    }
-
-    /// todo:: Consider the size of the canvas.
-    fn translate_to_canvas_coords(&self, x: f64, y: f64, canvas: &Canvas) -> (i32, i32) {
-        let window_height = canvas.height();
-        let window_width = canvas.width();
-        let dim_diff = ((window_width - window_height) / 2) as i32;
-        let left_pad = if dim_diff > 0 {dim_diff} else {0};
-        let top_pad = if dim_diff < 0 {-dim_diff} else {0};
-
-        (
-            ((y + 1.) * (window_height as f64) * 0.5) as i32 + left_pad,
-            ((-x + 1.) * (window_height as f64) * 0.5) as i32 + top_pad,
-        )
-    }
+    // todo:: Consider the size of the canvas.
+    //fn translate_to_canvas_coords(&self, x: f64, y: f64, canvas: &Canvas) -> (i32, i32) {
+    //    let window_height = canvas.height();
+    //    let window_width = canvas.width();
+    //    let dim_diff = ((window_width - window_height) / 2) as i32;
+    //    let left_pad = if dim_diff > 0 {dim_diff} else {0};
+    //    let top_pad = if dim_diff < 0 {-dim_diff} else {0};
+//
+    //    (
+    //        ((y + 1.) * (window_height as f64) * 0.5) as i32 + left_pad,
+    //        ((-x + 1.) * (window_height as f64) * 0.5) as i32 + top_pad,
+    //    )
+    //}
 }
