@@ -94,6 +94,10 @@ impl point::Point for Hyperpoint {
             self.0[2] * to.0[2] - self.0[1] * to.0[1] - self.0[0] * to.0[0];
         minkowski_bilinear.acosh()
     }
+
+    fn angle(&self) -> f64 {
+        self.0.y.atan2(self.0.x)
+    }
 }
 
 #[derive(Clone, Debug, Deserialize)]

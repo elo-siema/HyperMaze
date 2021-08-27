@@ -71,6 +71,10 @@ impl point::Point for PoincarePoint {
         let dupa = 8;
         result
     }
+
+    fn angle(&self) -> f64 {
+        self.0.y.atan2(self.0.x)
+    }    
 }
 
 #[derive(Clone, Debug, Deserialize)]

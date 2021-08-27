@@ -1,6 +1,7 @@
 use crate::utils::color::RGBColor;
 use crate::{game::Game, utils::poincarepoint::PoincareWall};
 use line_drawing::Bresenham;
+use macroquad::prelude::*;
 
 /// Draws a top-down view on a Poincare disk.
 pub struct TopDownRenderer {
@@ -46,6 +47,15 @@ impl TopDownRenderer {
     /// # Parameters:
     ///		- canvas		The canvas that should be drawn to.
     pub fn render(&self, game: &Game) {
+
+        clear_background(BLACK);
+        set_camera(&Camera3D {
+            position: vec3(0., 0., 0.1),
+            up: vec3(1., 0., 0.),
+            target: vec3(0., 0., 0.),
+            ..Default::default()
+        });
+        draw_circle_lines(0., 0., 1., 0.0001, WHITE);
         //draw walls:
         game
             .map
@@ -53,12 +63,14 @@ impl TopDownRenderer {
             .iter()
             .map(|w| w.clone().into())
             .for_each(|wall: PoincareWall| {
-                //self.draw_wall(&wall, canvas);
+                self.draw_wall(&wall);
             });
     }
 
     // Draws wall as a line on the Poincare disk model.
-    //fn draw_wall(&self, wall: &PoincareWall) {
+    fn draw_wall(&self, wall: &PoincareWall) {
+
+    }
     //    let start =
     //        self.translate_to_canvas_coords(wall.beginning.0[0], wall.beginning.0[1], canvas);
     //    let end = self.translate_to_canvas_coords(wall.end.0[0], wall.end.0[1], canvas);

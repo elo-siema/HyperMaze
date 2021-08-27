@@ -47,6 +47,10 @@ impl HyperMap {
         wallsp
     }
 
+    //pub fn get_walls_as_polar(&self) -> Vec<((angle:f64, distance:f64),(angle:f64, distance:f64))> {
+
+    //}
+
     /// Rotate all walls around an origin.
     pub fn rotate(&mut self, step: f64) {
         for wall in &mut self.walls {

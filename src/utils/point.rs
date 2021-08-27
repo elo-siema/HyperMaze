@@ -7,6 +7,7 @@ pub trait Point {
     fn distance_to(&self, to: &Self) -> f64;
     fn minkowski_dot(a: &Self, b: &Self) -> f64;
     fn new_at_origin() -> Self;
+    fn angle(&self) -> f64;
 }
 
 /// Trait describing common operations on walls,
