@@ -13,6 +13,7 @@ nalgebra = {version = "*", features = ["serde-serialize"]}
 line_drawing = "*"
 console_error_panic_hook = "0.1.6"
 fps_clock = "*"
+futures = {version = "0.3", features = ["thread-pool"]}
 
 [profile.dev]
 opt-level = 0

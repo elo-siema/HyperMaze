@@ -1,24 +1,14 @@
+use std::collections::HashMap;
+
 use macroquad::prelude::*;
+use futures::executor;
 
-use crate::utils::color::RGBColor;
-use crate::{game::Game, utils::cartesianpoint::*, utils::polarpoint::*};
+use crate::constants::*;
+use crate::{game::Game, utils::cartesianpoint::*};
 
-enum Hit {
-    /// The ray hit a wall with a given color at a given distance.
-    Wall { color: RGBColor, distance: f64 },
-}
 /// Raycaster in hyperbolic space.
 pub struct FppRenderer {
-    /// The radius around the player where objects should appear illuminated
-    pub illumination_radius: f64,
-    pub relative_screen_size: f64,
-    pub focal_length: f64,
-
-    /// The minimum environment light of the scene
-    pub minimum_light: f64,
-
-    pub player_height: f64,
-    pub field_of_vision: f64,
+    textures: HashMap<String, Texture2D>,
 }
 
 
@@ -32,20 +22,18 @@ impl FppRenderer {
     ///	 	- illumination_radius:		The radius around the player where objects should appear illuminated.
     ///	 	- minimum_öight:			The minimum environment light of the scene.
     ///
-    pub fn new(
-        relative_screen_size: f64,
-        focal_length: f64,
-        illumination_radius: f64,
-        minimum_light: f64,
-    ) -> FppRenderer {
+    pub async fn new() -> FppRenderer {
         FppRenderer {
-            relative_screen_size,
-            focal_length,
-            illumination_radius,
-            minimum_light,
-            player_height: 0.05,
-            field_of_vision: std::f64::consts::PI / 2.0,
+            textures: Self::load_textures().await
         }
+    }
+
+    async fn load_textures() -> HashMap<String, Texture2D> {
+        let mut textures = HashMap::new();
+        textures.insert("WALL".to_string(), load_texture("assets/textures/wall.png").await.unwrap());
+        textures.insert("MARBLE".to_string(), load_texture("assets/textures/marble.png").await.unwrap());
+
+        textures
     }
 
     /// Renders one frame into a canvas.
@@ -64,55 +52,67 @@ impl FppRenderer {
             ..Default::default()
         });
 
-        let walls = game.map.get_walls_iter();
-
-        let walls_polar: Vec<PolarWall> = walls
+        let walls_cartesian = game.map
+        .get_walls_iter()
         .map(|wall| {
             wall.into()
-        })
-        .collect(); 
-
-        let walls_cartesian: Vec<CartesianWall> = walls_polar
-        .iter()
-        .map(|wall| {
-            wall.into()
-        })
-        .collect();
+        });
 
         for wall in walls_cartesian {
-            Self::draw_wall(&wall);
+            self.draw_wall(&wall);
+        }
+
+        let objects_cartesian = game.map
+        .get_objects_iter()
+        .map(|obj| {
+            obj.into()
+        });
+
+        for obj in objects_cartesian {
+            self.draw_object(&obj);
         }
     }
 
-    fn draw_wall(wall: &CartesianWall) {
-        println!("Drawing wall, beg:{},{}, end:{},{}", wall.beginning.x, wall.beginning.y, wall.end.x, wall.end.y);
+    fn draw_object(&self, object: &CartesianObject) {
+        if !object.active { return; }
+
+        draw_sphere(
+            Vec3::new(object.position.x as f32, object.position.y as f32, 0.02), 
+            OBJECT_RADIUS, 
+            self.textures.get("MARBLE").unwrap().clone(), 
+            OBJECT_COLOR
+        );
+    }
+
+    fn draw_wall(&self, wall: &CartesianWall) {
+        //println!("Drawing wall, beg:{},{}, end:{},{}", wall.beginning.x, wall.beginning.y, wall.end.x, wall.end.y);
         let mesh = Mesh{
             vertices: vec![
                 macroquad::models::Vertex{
                     position: Vec3::new(wall.beginning.x as f32, wall.beginning.y as f32, 0.),
                     uv: Vec2::new(0., 0.),
-                    color: RED
+                    color: WHITE
                 },
                 macroquad::models::Vertex{
                     position: Vec3::new(wall.beginning.x as f32, wall.beginning.y as f32, 0.1),
-                    uv: Vec2::new(0., 0.),
-                    color: RED
+                    uv: Vec2::new(0., 1.),
+                    color: WHITE
                 },
                 macroquad::models::Vertex{
                     position: Vec3::new(wall.end.x as f32, wall.end.y as f32, 0.),
-                    uv: Vec2::new(0., 0.),
-                    color: BLACK
+                    uv: Vec2::new(1., 0.),
+                    color: WHITE
                 },
                 macroquad::models::Vertex{
                     position: Vec3::new(wall.end.x as f32, wall.end.y as f32, 0.1),
-                    uv: Vec2::new(0., 0.),
-                    color: BLACK
+                    uv: Vec2::new(1., 1.),
+                    color: WHITE
                 },
             ],
             indices: vec![
                 0,1,2,1,2,3
             ],
-            texture: None
+            texture: Some(self.textures.get("WALL").unwrap().clone()),
         };
         draw_mesh(&mesh);
     }

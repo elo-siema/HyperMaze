@@ -1,11 +1,12 @@
 pub mod hypermap;
+pub mod textures;
 
 use crate::game::hypermap::*;
 
 /// Represents the state of our game's virtual world
 pub struct Game {
     /// The map of our virtual world
-    pub map: HyperMap,
+    pub map: HyperMap
 }
 
 impl Game {
@@ -37,4 +38,5 @@ impl Game {
     pub fn strafe_player(&mut self, distance: f64) {
         self.map.translate(0.0, distance);
     }
+
 }

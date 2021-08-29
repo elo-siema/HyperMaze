@@ -7,7 +7,7 @@ use serde::Deserialize;
 
 use crate::utils::hyperpoint;
 
-use super::{color::RGBColor, point};
+use super::{color::RGBColor, hyperpoint::HyperObject, point};
 
 /// Struct representing a point on the
 /// Poincare disk model.
@@ -17,6 +17,13 @@ pub struct PoincarePoint(pub Point2<f64>);
 
 impl From<Hyperpoint> for PoincarePoint {
     fn from(hyperpoint: Hyperpoint) -> Self {
+        let denom = hyperpoint.0[2] + 1.0;
+        PoincarePoint::new(hyperpoint.0[0] / denom, hyperpoint.0[1] / denom)
+    }
+}
+
+impl From<&Hyperpoint> for PoincarePoint {
+    fn from(hyperpoint: &Hyperpoint) -> Self {
         let denom = hyperpoint.0[2] + 1.0;
         PoincarePoint::new(hyperpoint.0[0] / denom, hyperpoint.0[1] / denom)
     }
@@ -81,7 +88,8 @@ impl point::Point for PoincarePoint {
 pub struct PoincareWall {
     pub beginning: PoincarePoint,
     pub end: PoincarePoint,
-    pub color: RGBColor,
+    pub texture: String,
+    pub height: f64
 }
 
 impl From<HyperWall> for PoincareWall {
@@ -89,7 +97,8 @@ impl From<HyperWall> for PoincareWall {
         PoincareWall {
             beginning: hyperwall.beginning.into(),
             end: hyperwall.end.into(),
-            color: hyperwall.color,
+            texture: hyperwall.texture,
+            height: hyperwall.height
         }
     }
 }
@@ -197,6 +206,21 @@ impl PoincareWall {
         match self.is_point_on_wall(closest_point, a, b) {
             true => Some(closest_distance),
             false => None,
+        }
+    }
+}
+
+#[derive(Deserialize)]
+pub struct PoincareObject {
+    pub position: PoincarePoint,
+    pub active: bool
+}
+
+impl From<&HyperObject> for PoincareObject {
+    fn from(obj: &HyperObject) -> PoincareObject {
+        PoincareObject {
+            position: PoincarePoint::from(&obj.position),
+            active: obj.active
         }
     }
 }

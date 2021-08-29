@@ -1,21 +1,11 @@
+use crate::constants::_ASPECT_RATIO;
 use crate::utils::color::RGBColor;
-use crate::{game::Game, utils::poincarepoint::PoincareWall};
+use crate::{game::Game, utils::poincarepoint::*};
 use line_drawing::Bresenham;
 use macroquad::prelude::*;
 
 /// Draws a top-down view on a Poincare disk.
 pub struct TopDownRenderer {
-    /// The size of the physical computer display in relation to a grid field
-    pub relative_screen_size: f64,
-
-    /// The focal length used for determining the window angle
-    pub focal_length: f64,
-
-    /// The radius around the player where objects should appear illuminated
-    pub illumination_radius: f64,
-
-    /// The minimum environment light of the scene
-    pub minimum_light: f64,
 }
 
 impl TopDownRenderer {
@@ -29,16 +19,8 @@ impl TopDownRenderer {
     ///	 	- minimum_öight:			The minimum environment light of the scene.
     ///
     pub fn new(
-        relative_screen_size: f64,
-        focal_length: f64,
-        illumination_radius: f64,
-        minimum_light: f64,
     ) -> TopDownRenderer {
         TopDownRenderer {
-            relative_screen_size,
-            focal_length,
-            illumination_radius,
-            minimum_light,
         }
     }
 
@@ -49,13 +31,16 @@ impl TopDownRenderer {
     pub fn render(&self, game: &Game) {
 
         clear_background(BLACK);
-        set_camera(&Camera3D {
-            position: vec3(0., 0., 0.1),
-            up: vec3(1., 0., 0.),
-            target: vec3(0., 0., 0.),
+        set_camera(&Camera2D {
+            target: vec2(0., 0.),
+            zoom: vec2(1./_ASPECT_RATIO,1.),
+            rotation: 90.,
             ..Default::default()
         });
-        draw_circle_lines(0., 0., 1., 0.0001, WHITE);
+        draw_circle_lines(0., 0., 1., 0.005,  WHITE);
+        draw_line(40.0, 40.0, 100.0, 200.0, 15.0, BLUE);
+        draw_rectangle(screen_width() / 2.0 - 60.0, 100.0, 120.0, 60.0, GREEN);
+        
         //draw walls:
         game
             .map
@@ -65,12 +50,35 @@ impl TopDownRenderer {
             .for_each(|wall: PoincareWall| {
                 self.draw_wall(&wall);
             });
+
+        //draw objects:
+        game
+            .map
+            .get_objects_iter()
+            .for_each(|object| {
+                self.draw_object(&object.into());
+            });
     }
 
     // Draws wall as a line on the Poincare disk model.
     fn draw_wall(&self, wall: &PoincareWall) {
-
+        draw_line(
+            wall.beginning.0.x as f32, 
+            wall.beginning.0.y as f32, 
+            wall.end.0.x as f32, 
+            wall.end.0.y as f32, 
+            0.005, 
+            BLUE);
     }
+
+    fn draw_object(&self, object: &PoincareObject) {
+        draw_circle(
+            object.position.0.x as f32,
+            object.position.0.y as f32,
+            0.005,
+            RED);
+    }
+
     //    let start =
     //        self.translate_to_canvas_coords(wall.beginning.0[0], wall.beginning.0[1], canvas);
     //    let end = self.translate_to_canvas_coords(wall.end.0[0], wall.end.0[1], canvas);

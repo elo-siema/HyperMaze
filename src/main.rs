@@ -4,6 +4,7 @@ mod fpp_renderer;
 mod top_down_renderer;
 mod utils;
 
+use futures::{executor, task::Spawn};
 use macroquad::prelude::*;
 use constants::*;
 use fpp_renderer::*;
@@ -21,33 +22,42 @@ fn window_conf() -> Conf {
     }
 }
 
+fn show_loading(){
+    clear_background(BLACK);
+    draw_text("Loading...", 50., 50., 100., RED);
+}
+
 #[macroquad::main(window_conf)]
 async fn main() {
 
+    // Experiment determined that we need to display two frames
+    // in order for the loading screen to be shown.
+    show_loading();
+    next_frame().await;
+    show_loading();
+    next_frame().await;
 
-    //let mut top_down_view = false;
-    let mut game = Game::new(HyperMap::new(include_str!("../assets/demo.json")));
-    let fpp_renderer = FppRenderer::new(1.0, 0.75, 1., 0.25);
-    let top_down_renderer = TopDownRenderer::new(1.0, 0.75, 1., 0.25);
+    // Initialize the game
+    let mut game = Game::new(HyperMap::new(include_str!("../assets/demotext.json")));
 
+    // Initialize the renderers. This takes a bit of time
+    // because it needs to load the textures.
+    let fpp_renderer = executor::block_on(FppRenderer::new());
+    let top_down_renderer = TopDownRenderer::new();
 
 
     loop {
         clear_background(RED);
 
-        //draw_line(40.0, 40.0, 100.0, 200.0, 15.0, BLUE);
-        //draw_rectangle(screen_width() / 2.0 - 60.0, 100.0, 120.0, 60.0, GREEN);
-        //draw_circle(screen_width() - 30.0, screen_height() - 30.0, 15.0, YELLOW);
-
         //draw_text("IT WORKS!", 20.0, 20.0, 30.0, DARKGRAY);
-        let movement = MOVEMENT_SPEED*get_frame_time();
+        let movement = if is_key_down(KEY_FASTER) {MOVEMENT_SPEED*get_frame_time()*2.} else {MOVEMENT_SPEED*get_frame_time()};
         let rotation = ROTATION_SPEED*get_frame_time();
-        if is_key_down(KEY_FORWARD) { game.move_player(-movement as f64); }
-        if is_key_down(KEY_BACKWARD) { game.move_player(movement as f64); }
-        if is_key_down(KEY_STRAFE_L) { game.strafe_player(-movement as f64); }
-        if is_key_down(KEY_STRAFE_R) { game.strafe_player(movement as f64); }
-        if is_key_down(KEY_LEFT) { game.rotate_player(rotation as f64); }
-        if is_key_down(KEY_RIGHT) { game.rotate_player(-rotation as f64); }
+        if is_key_down(KEY_FORWARD) || is_key_down(KEY_FORWARD_ALT) { game.move_player(-movement as f64); }
+        if is_key_down(KEY_BACKWARD) || is_key_down(KEY_BACKWARD_ALT) { game.move_player(movement as f64); }
+        if is_key_down(KEY_STRAFE_L) { game.strafe_player(movement as f64); }
+        if is_key_down(KEY_STRAFE_R) { game.strafe_player(-movement as f64); }
+        if is_key_down(KEY_LEFT) { game.rotate_player(-rotation as f64); }
+        if is_key_down(KEY_RIGHT) { game.rotate_player(rotation as f64); }
         if is_key_down(KEY_EXIT) { std::process::exit(0); }
         if is_key_down(KEY_CHANGE_VIEW) { 
             top_down_renderer.render(&game) 

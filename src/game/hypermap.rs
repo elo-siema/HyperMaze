@@ -1,9 +1,18 @@
-use crate::utils::{hyperpoint::HyperWall, poincarepoint::PoincareWall};
+use crate::utils::{hyperpoint::*, poincarepoint::*};
+use serde::{Serialize, Deserialize};
 
 /// Represents the map in the Minkowski hyperboloid model.
 pub struct HyperMap {
     /// Walls of the map.
     walls: Vec<HyperWall>,
+    objects: Vec<HyperObject>
+}
+
+
+#[derive(Deserialize)]
+struct PoincareMap {
+    walls: Vec<PoincareWall>,
+    objects: Vec<PoincareObject>
 }
 
 impl HyperMap {
@@ -12,31 +21,27 @@ impl HyperMap {
     /// # Parameters
     ///    - `map_string`:	A JSON representation of the map, an array of PoincareWalls.
     pub fn new(map_string: &str) -> HyperMap {
-        // Parse JSON to PoincareWalls.
-        let walls: Vec<PoincareWall> = serde_json::from_str(map_string).unwrap();
+        // Parse JSON to PoincareMap.
+        let map: PoincareMap = serde_json::from_str(map_string).unwrap();
 
-        // Scrapped idea - representing the walls as a set sorted by distance to origin.
-        // Would need to be checked and resorted every frame.
-        /*let mut transformedWalls: BTreeSet<HyperWall> = BTreeSet::<HyperWall>::new();
-        for wall in walls {
-            let transformed : HyperWall= wall.into();
-            transformedWalls.insert(transformed);
-        }*/
+        // Then transform them into the Minkowski Hyperboloid as internal representation.
+        // This is done so it's easier to do transformations on the points
+        let transformed_walls: Vec<HyperWall> = map.walls.into_iter().map(|w| w.into()).collect();
+        let transformed_objects: Vec<HyperObject> = map.objects.into_iter().map(|o| o.into()).collect();
 
-        // Then transform them into HyperWalls as internal representation.
-        // This is done so it's easier to do transformations on the walls.
-        let mut transformed_walls: Vec<HyperWall> = walls.into_iter().map(|w| w.into()).collect();
-
-        // Sort by distance to origin.
-        transformed_walls.sort_unstable();
         HyperMap {
             walls: transformed_walls,
+            objects: transformed_objects
         }
     }
 
     /// Returns iterator of HyperWall references.
     pub fn get_walls_iter(&self) -> impl Iterator<Item = &HyperWall> {
         self.walls.iter()
+    }
+
+    pub fn get_objects_iter(&self) -> impl Iterator<Item = &HyperObject> {
+        self.objects.iter()
     }
 
     /// Returns iterator of PoincareWall references.
@@ -47,16 +52,17 @@ impl HyperMap {
         wallsp
     }
 
-    //pub fn get_walls_as_polar(&self) -> Vec<((angle:f64, distance:f64),(angle:f64, distance:f64))> {
-
-    //}
-
     /// Rotate all walls around an origin.
     pub fn rotate(&mut self, step: f64) {
         for wall in &mut self.walls {
             wall.beginning.rotate(step);
             wall.end.rotate(step);
         }
+
+        for object in &mut self.objects {
+            object.position.rotate(step);
+        }
+        
         // Keep walls sorted
         self.walls.sort_unstable();
     }
@@ -67,6 +73,11 @@ impl HyperMap {
             wall.beginning.translate(x, y);
             wall.end.translate(x, y);
         }
+
+        for object in &mut self.objects {
+            object.position.translate(x, y);
+        }
+
         // Keep walls sorted
         self.walls.sort_unstable();
     }

@@ -4,7 +4,7 @@ use super::color::RGBColor;
 use crate::utils::*;
 use cmp::Ordering;
 use nalgebra::*;
-use poincarepoint::{PoincarePoint, PoincareWall};
+use poincarepoint::*;
 use point::{Point, Wall};
 use serde::Deserialize;
 
@@ -104,7 +104,8 @@ impl point::Point for Hyperpoint {
 pub struct HyperWall {
     pub beginning: Hyperpoint,
     pub end: Hyperpoint,
-    pub color: RGBColor,
+    pub texture: String,
+    pub height: f64
 }
 
 impl HyperWall {
@@ -146,7 +147,8 @@ impl From<PoincareWall> for HyperWall {
         HyperWall {
             beginning: poincare_wall.beginning.into(),
             end: poincare_wall.end.into(),
-            color: poincare_wall.color,
+            texture: poincare_wall.texture,
+            height: poincare_wall.height
         }
     }
 }
@@ -170,5 +172,21 @@ impl PartialOrd for HyperWall {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         self.distance_to_closest_point()
             .partial_cmp(&other.distance_to_closest_point())
+    }
+}
+
+
+#[derive(Deserialize)]
+pub struct HyperObject {
+    pub position: Hyperpoint,
+    pub active: bool
+}
+
+impl From<PoincareObject> for HyperObject {
+    fn from(poincare_object: PoincareObject) -> HyperObject {
+        HyperObject {
+            position: poincare_object.position.into(),
+            active: poincare_object.active
+        }
     }
 }
