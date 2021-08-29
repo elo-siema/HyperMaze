@@ -38,8 +38,7 @@ impl TopDownRenderer {
             ..Default::default()
         });
         draw_circle_lines(0., 0., 1., 0.005,  WHITE);
-        draw_line(40.0, 40.0, 100.0, 200.0, 15.0, BLUE);
-        draw_rectangle(screen_width() / 2.0 - 60.0, 100.0, 120.0, 60.0, GREEN);
+        draw_circle(0., 0., 0.005, WHITE);
         
         //draw walls:
         game
@@ -72,11 +71,20 @@ impl TopDownRenderer {
     }
 
     fn draw_object(&self, object: &PoincareObject) {
-        draw_circle(
-            object.position.0.x as f32,
-            object.position.0.y as f32,
-            0.005,
-            RED);
+        if object.active {
+            draw_circle(
+                object.position.0.x as f32,
+                object.position.0.y as f32,
+                0.005,
+                RED);
+        } else {
+            draw_circle_lines(
+                object.position.0.x as f32,
+                object.position.0.y as f32,
+                0.005,
+                0.003,
+                RED);
+        }
     }
 
     //    let start =

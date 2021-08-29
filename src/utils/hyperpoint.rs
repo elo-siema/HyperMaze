@@ -1,6 +1,5 @@
 use std::cmp;
 
-use super::color::RGBColor;
 use crate::utils::*;
 use cmp::Ordering;
 use nalgebra::*;

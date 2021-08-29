@@ -4,7 +4,7 @@ use macroquad::prelude::*;
 use futures::executor;
 
 use crate::constants::*;
-use crate::{game::Game, utils::cartesianpoint::*};
+use crate::{game::Game, utils::cartesianpoint::*, utils::poincarepoint::*, utils::kleinpoint::*};
 
 /// Raycaster in hyperbolic space.
 pub struct FppRenderer {
@@ -55,7 +55,8 @@ impl FppRenderer {
         let walls_cartesian = game.map
         .get_walls_iter()
         .map(|wall| {
-            wall.into()
+            let wall = KleinWall::from(wall.clone());
+            (&wall).into()
         });
 
         for wall in walls_cartesian {
@@ -65,7 +66,8 @@ impl FppRenderer {
         let objects_cartesian = game.map
         .get_objects_iter()
         .map(|obj| {
-            obj.into()
+            let obj = KleinObject::from(obj.clone());
+            (&obj).into()
         });
 
         for obj in objects_cartesian {
@@ -74,14 +76,21 @@ impl FppRenderer {
     }
 
     fn draw_object(&self, object: &CartesianObject) {
-        if !object.active { return; }
-
-        draw_sphere(
-            Vec3::new(object.position.x as f32, object.position.y as f32, 0.02), 
-            OBJECT_RADIUS, 
-            self.textures.get("MARBLE").unwrap().clone(), 
-            OBJECT_COLOR
-        );
+        if object.active {
+            draw_sphere(
+                Vec3::new(object.position.x as f32, object.position.y as f32, 0.02), 
+                OBJECT_RADIUS, 
+                self.textures.get("MARBLE").unwrap().clone(), 
+                OBJECT_COLOR
+            );
+        } else {
+            draw_sphere_wires(
+                Vec3::new(object.position.x as f32, object.position.y as f32, 0.02), 
+                OBJECT_RADIUS, 
+                self.textures.get("MARBLE").unwrap().clone(), 
+                OBJECT_COLOR
+            );
+        }
     }
 
     fn draw_wall(&self, wall: &CartesianWall) {
