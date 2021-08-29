@@ -1,6 +1,6 @@
 use crate::constants::_ASPECT_RATIO;
 use crate::utils::color::RGBColor;
-use crate::{game::Game, utils::poincarepoint::*};
+use crate::{game::Game, utils::poincarepoint::*, utils::kleinpoint::*};
 use line_drawing::Bresenham;
 use macroquad::prelude::*;
 
@@ -43,19 +43,19 @@ impl TopDownRenderer {
         //draw walls:
         game
             .map
-            .get_walls_as_poincare()
-            .iter()
-            .map(|w| w.clone().into())
-            .for_each(|wall: PoincareWall| {
-                self.draw_wall(&wall);
+            .get_walls_iter()
+            .map(|w| KleinWall::from(w.clone()))
+            .for_each(|wall| {
+                self.draw_wall_klein(&wall);
             });
 
         //draw objects:
         game
             .map
             .get_objects_iter()
-            .for_each(|object| {
-                self.draw_object(&object.into());
+            .for_each(|obj| {
+                let obj = KleinObject::from(obj.clone());
+                self.draw_object_klein(&obj);
             });
     }
 
@@ -70,7 +70,34 @@ impl TopDownRenderer {
             BLUE);
     }
 
+    fn draw_wall_klein(&self, wall: &KleinWall) {
+        draw_line(
+            wall.beginning.0.x as f32, 
+            wall.beginning.0.y as f32, 
+            wall.end.0.x as f32, 
+            wall.end.0.y as f32, 
+            0.005, 
+            BLUE);
+    }
+
     fn draw_object(&self, object: &PoincareObject) {
+        if object.active {
+            draw_circle(
+                object.position.0.x as f32,
+                object.position.0.y as f32,
+                0.005,
+                RED);
+        } else {
+            draw_circle_lines(
+                object.position.0.x as f32,
+                object.position.0.y as f32,
+                0.005,
+                0.003,
+                RED);
+        }
+    }
+
+    fn draw_object_klein(&self, object: &KleinObject) {
         if object.active {
             draw_circle(
                 object.position.0.x as f32,
