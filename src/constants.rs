@@ -11,6 +11,9 @@ pub const WALL_HEIGHT: f32 = 0.1;
 pub const MOVEMENT_SPEED: f32 = 0.5;
 pub const ROTATION_SPEED: f32 = 1.5;
 
+pub const COLLISION_RADIUS: f64 = 0.07;
+pub const EPSILON: f64 = 0.05;
+
 pub const KEY_RIGHT: KeyCode = KeyCode::Right;
 pub const KEY_LEFT: KeyCode = KeyCode::Left;
 pub const KEY_FORWARD: KeyCode = KeyCode::Up;

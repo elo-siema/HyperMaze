@@ -24,7 +24,7 @@ fn window_conf() -> Conf {
 
 fn show_loading(){
     clear_background(BLACK);
-    draw_text("Loading...", 50., 50., 100., RED);
+    draw_text("Loading...", 50., 100., 100., RED);
 }
 
 #[macroquad::main(window_conf)]
@@ -45,11 +45,8 @@ async fn main() {
     let fpp_renderer = executor::block_on(FppRenderer::new());
     let top_down_renderer = TopDownRenderer::new();
 
-
     loop {
-        clear_background(RED);
-
-        //draw_text("IT WORKS!", 20.0, 20.0, 30.0, DARKGRAY);
+        // Update the game
         let movement = if is_key_down(KEY_FASTER) {MOVEMENT_SPEED*get_frame_time()*2.} else {MOVEMENT_SPEED*get_frame_time()};
         let rotation = ROTATION_SPEED*get_frame_time();
         if is_key_down(KEY_FORWARD) || is_key_down(KEY_FORWARD_ALT) { game.move_player(-movement as f64); }
@@ -59,12 +56,17 @@ async fn main() {
         if is_key_down(KEY_LEFT) { game.rotate_player(-rotation as f64); }
         if is_key_down(KEY_RIGHT) { game.rotate_player(rotation as f64); }
         if is_key_down(KEY_EXIT) { std::process::exit(0); }
+
+        game.tick();
+
+        // Render the game
         if is_key_down(KEY_CHANGE_VIEW) { 
             top_down_renderer.render(&game) 
         }
         else { 
             fpp_renderer.render(&game); 
         }
+        game.display_hud();
         next_frame().await
     }
 }
