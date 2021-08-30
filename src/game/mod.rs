@@ -73,14 +73,7 @@ impl Game {
             let denominator = ((x2 - x1).powi(2) + (y2 - y1).powi(2)).sqrt();
             let distance = numerator / denominator;
             
-            // We only want to detect collision, if the player is actually
-            // colliding with the wall, not with the line on which the wall lies.
-            // So we can imagine a bounding rectangle around the wall. We only
-            // count a collision, if the bounding box contains the origin.
-            // We can achieve that by checking whether X or Y coordinates
-            // of wall beginnings and ends have opposite signs (pass through origin).
-            let within_bounding_box = x1*x2 <= 0. && y1*y2 <= 0.;
-            //println!("x1*x2: {}, y1*y2: {}", x1*x2, y1*y2);
+            
             fn distance_between(ax: f64, ay: f64, bx: f64, by: f64) -> f64 {
                 ((ax-bx).powi(2) + (ay-by).powi(2)).sqrt()
             }
