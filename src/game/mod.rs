@@ -45,7 +45,6 @@ impl Game {
         self.move_player_internal(0.0, distance);
     }
 
-    /// TODO:: collision checks
     fn move_player_internal(&mut self, dx: f64, dy: f64) {
         self.map.translate(dx, dy);
     }
@@ -69,14 +68,13 @@ impl Game {
             let x2 = wall.end.0.x;
             let y2 = wall.end.0.y;
 
-            let numerator = ((x2 - x1) * y1 - (y2 - y1) * x1).abs();
-            let denominator = ((x2 - x1).powi(2) + (y2 - y1).powi(2)).sqrt();
-            let distance = numerator / denominator;
-            
-            
             fn distance_between(ax: f64, ay: f64, bx: f64, by: f64) -> f64 {
                 ((ax-bx).powi(2) + (ay-by).powi(2)).sqrt()
             }
+
+            let numerator = ((x2 - x1) * y1 - (y2 - y1) * x1).abs();
+            let denominator = distance_between(x1, y1, x2, y2);//((x2 - x1).powi(2) + (y2 - y1).powi(2)).sqrt();
+            let distance = numerator / denominator;            
 
             let helper = distance_between(x1, y1, 0., 0.) + distance_between(x2, y2, 0., 0.) - distance_between(x1, y1, x2, y2);
             let is_between = -EPSILON < helper && helper < EPSILON;
@@ -84,7 +82,9 @@ impl Game {
             let collision = distance < COLLISION_RADIUS && is_between;
             if collision { 
                 println!("collision at {}", distance); 
-                let normal = Vec2::new((x2-x1) as f32, (y2-y1) as f32);
+                // TODO :: using a normal here is wrong, 
+                // better to find the exact point of collision
+                let normal = Vec2::new((y2-y1) as f32, (x2-x1) as f32);
                 let difference = distance - COLLISION_RADIUS;
                 let normal_scaled = normal.clamp_length_max(difference as f32);
 
@@ -98,8 +98,8 @@ impl Game {
         });
 
         if let Some(v) = sum_corrections {
-            self.move_player_internal(v.y as f64, v.x as f64);
-            println!("Correcting player position by x:{}, y:{}", -v.x, v.y);
+            self.move_player_internal(v.x as f64, v.y as f64);
+            println!("Correcting player position by x:{}, y:{}", v.x, v.y);
         }
     }
 
