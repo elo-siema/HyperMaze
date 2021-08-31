@@ -10,7 +10,7 @@ use serde::Deserialize;
 /// Struct representing a point on the Minkowski
 /// hyperboloid model.
 /// Wrapper for nalgebra's Point3.
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, Copy)]
 pub struct Hyperpoint(pub Point3<f64>);
 
 impl From<PoincarePoint> for Hyperpoint {

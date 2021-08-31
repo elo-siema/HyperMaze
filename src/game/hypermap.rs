@@ -40,6 +40,10 @@ impl HyperMap {
         self.walls.iter()
     }
 
+    pub fn get_objects_iter_mut(&mut self) -> impl Iterator<Item = &mut HyperObject> {
+        self.objects.iter_mut()
+    }
+
     pub fn get_objects_iter(&self) -> impl Iterator<Item = &HyperObject> {
         self.objects.iter()
     }

@@ -6,7 +6,8 @@ use macroquad::ui::*;
 
 use crate::constants::*;
 use crate::game::hypermap::*;
-use crate::utils::kleinpoint::KleinWall;
+use crate::utils::kleinpoint::*;
+use crate::utils::point::Point;
 
 /// Represents the state of our game's virtual world
 pub struct Game {
@@ -51,7 +52,21 @@ impl Game {
     /// Actions taken every frame.
     pub fn tick(&mut self) {
         self.solve_wall_collisions();
+        self.solve_object_collisions();
     }   
+
+    fn solve_object_collisions(&mut self) {
+        self.map.get_objects_iter_mut()
+        .filter(|o| o.active)
+        .for_each(|o| {
+            let pos_klein = KleinPoint::from(o.position);
+            let distance = pos_klein.distance_to_origin();
+
+            if distance < (OBJECT_RADIUS as f64 + COLLISION_RADIUS) {
+                o.active = false;
+            }
+        });
+    }
 
     fn solve_wall_collisions(&mut self) {
         // use klein because fuck it
@@ -155,7 +170,7 @@ impl Game {
         let total_objects = self.map.get_objects_iter().count();
         let inactive_objects = self.map
             .get_objects_iter()
-            .filter(|o| o.active)
+            .filter(|o| !o.active)
             .count();
         if inactive_objects == total_objects {
             root_ui().label(None, "You won!");
