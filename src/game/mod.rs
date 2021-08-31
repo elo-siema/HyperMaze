@@ -62,25 +62,15 @@ impl Game {
             KleinWall::from(wall.clone())
         });
 
+        // First, find collisions with walls - approximate them to lines
         let corrections = walls.filter_map(|wall| {
             let x1 = wall.end.0.x;
             let y1 = wall.end.0.y;
             let x2 = wall.beginning.0.x;
             let y2 = wall.beginning.0.y;
-
-            fn distance_between(ax: f64, ay: f64, bx: f64, by: f64) -> f64 {
-                ((ax-bx).powi(2) + (ay-by).powi(2)).sqrt()
-            }
-
-            let numerator = ((x2 - x1) * y1 - (y2 - y1) * x1).abs();
-            let denominator = distance_between(x1, y1, x2, y2);//((x2 - x1).powi(2) + (y2 - y1).powi(2)).sqrt();
-            let distance = numerator / denominator;           
+       
             
-            let lccollision = line_circle_collision_avg_2(x1, y1, x2, y2, COLLISION_RADIUS);
-                if let Some (lccolresult) = lccollision {
-                    let lc_distance = distance_between(lccolresult.0, lccolresult.1, 0., 0.);
-                    //println!("lccolresult: distance:{}, x:{}, y:{}",lc_distance, lccolresult.0, lccolresult.1);
-                }
+            let lccollision = line_circle_collision_avg(x1, y1, x2, y2, COLLISION_RADIUS);
 
             let distance = match lccollision{
                 Some(lccolresult) => distance_between(lccolresult.0, lccolresult.1, 0., 0.),
@@ -92,16 +82,39 @@ impl Game {
 
             let collision = distance < COLLISION_RADIUS && is_between;
 
-            
-
             if collision { 
-                println!("collision at {}", distance); 
+                //println!("collision at {} ", distance); 
 
-                
-
-                // TODO :: using a normal here is wrong, 
-                // better to find the exact point of collision
                 let normal = Vec2::new(-lccollision.unwrap().0 as f32, lccollision.unwrap().1 as f32);
+                let difference = distance - COLLISION_RADIUS;
+                //println!("difference: {} ", difference); 
+                
+                let normal_scaled = normal.clamp_length_max(difference as f32);
+
+                return Some(normal_scaled);
+            }
+            None
+        });
+
+        // Next, find collisions with wall ends - approximate them to circles
+        let mut vertices = vec![];
+
+        self.map
+        .get_walls_iter()
+        .map(|wall| {
+            KleinWall::from(wall.clone())
+        }).for_each(|wall| {
+            vertices.push(wall.beginning.0.clone());
+            vertices.push(wall.end.0.clone());
+        });
+
+        let vertex_corrections = vertices
+        .iter()
+        .filter_map(|&v| {
+            let distance = distance_between(v.x, v.y, 0., 0.);
+            let collision = distance < COLLISION_RADIUS;
+            if collision {
+                let normal = Vec2::new(-v.x as f32, -v.y as f32);
                 let difference = distance - COLLISION_RADIUS;
                 let normal_scaled = normal.clamp_length_max(difference as f32);
 
@@ -110,9 +123,10 @@ impl Game {
             None
         });
 
-        //corrections.for_each(|correction| {
-        
-        let sum_corrections = corrections.reduce(|acc, correction| {
+        //Apply corrections from both sources
+        let sum_corrections = corrections
+        .chain(vertex_corrections)
+        .reduce(|acc, correction| {
             acc + correction
         });
 
@@ -136,7 +150,11 @@ impl Game {
     }
 }
 
-fn line_circle_collision_avg_2(x1: f64, y1: f64, x2: f64, y2: f64, r: f64) -> Option<(f64, f64)> {
+fn distance_between(ax: f64, ay: f64, bx: f64, by: f64) -> f64 {
+    ((ax-bx).powi(2) + (ay-by).powi(2)).sqrt()
+}
+
+fn line_circle_collision_avg(x1: f64, y1: f64, x2: f64, y2: f64, r: f64) -> Option<(f64, f64)> {
     let a = (y2-y1)/(x2-x1);
     let b = y1 - a * x1;
 
@@ -154,90 +172,21 @@ fn line_circle_collision_avg_2(x1: f64, y1: f64, x2: f64, y2: f64, r: f64) -> Op
 
     Some((result_x, result_y))
 }
-
-fn line_circle_collision_avg(x1: f64, y1: f64, x2: f64, y2: f64, r: f64) -> Option<(f64, f64)> {
-    let slope = (y2-y1)/(x2-x1);
-    let intercept = y1 - slope * x1;
-
-    let delta = -4. * (slope.powi(2)*r.powi(2) + intercept.powi(2) - r.powi(2));
-
-    if(delta < 0.0) { 
-        println!("delta == 0");
-        return None 
-    } //no collision
-    println!("delta: {}", delta);
-
-    let sqrt_delta = delta.sqrt();
-
-    let result_x1 = (-(2.*slope*intercept) - sqrt_delta) / 2.*(slope.powi(2) + 1.);
-    let result_x2 = (-(2.*slope*intercept) + sqrt_delta) / 2.*(slope.powi(2) + 1.);
-    let result_y1 = slope * result_x1 + intercept;
-    let result_y2 = slope * result_x2 + intercept;
-
-    let result_x = (result_x1 + result_x2) / 2.;
-    let result_y = (result_y1 + result_y2) / 2.;
-
-    Some((result_x, result_y))
-}
-
-fn point_circle_collision(x: f64, y: f64, r: f64) -> bool {
-    if r == 0. { return false }
-    return x*x+y+y <= r*r;
-}
-
-fn line_circle_collision(ax: f64, ay: f64, bx: f64, by: f64, r: f64) -> Option<(f64, f64)> {
-    if point_circle_collision(ax, ay, r) {
-        return Some((ax, ay));
-    }
-    if point_circle_collision(bx, by, r) {
-        return Some((bx, by));
-    }
-
-    //vector d
-    let dx = bx - ax;
-    let dy = by - ay;
-
-    let lcx = -ax;
-    let lcy = -ay;
-
-    let dLen2 = dx*dx + dy*dy;
-    let mut px = dx;
-    let mut py = dy;
-    if dLen2 > 0. {
-        let dp = (lcx * dx + lcy * dy) / dLen2;
-        px *= dp;
-        py *= dp;
-    }
-
-    let resultx = ax + px;
-    let resulty = ay + py;
-
-    let pLen2 = px*px + py*py;
-
-    if point_circle_collision(resultx, resulty, r) 
-        && pLen2 <= dLen2 
-        && (px * dx + py * dy) >= 0. {
-            return Some((resultx, resulty))
-        }
-
-    None
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
     #[test]
     fn test_line_circle_collision() {
         let expected = (0.5, 0.5);
-        let result = line_circle_collision_avg_2(2., -1., -1., 2., 1.);
+        let result = line_circle_collision_avg(2., -1., -1., 2., 1.);
         assert_eq!(expected, result.unwrap());
 //
         let expected = (0.5, 0.5);
-        let result = line_circle_collision_avg_2(-1., 2., 2.,-1., 1.);
+        let result = line_circle_collision_avg(-1., 2., 2.,-1., 1.);
         assert_eq!(expected, result.unwrap());
 
         let expected = (-0.5, 0.5);
-        let result = line_circle_collision_avg_2(-1., 0., 0.,1., 1.);
+        let result = line_circle_collision_avg(-1., 0., 0.,1., 1.);
         assert_eq!(expected, result.unwrap());
 
 
