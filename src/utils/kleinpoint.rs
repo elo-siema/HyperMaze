@@ -1,13 +1,10 @@
-use std::cmp::Ordering;
-
-use hyperpoint::{HyperWall, HyperPoint};
+use hyperpoint::{HyperPoint, HyperWall};
 use nalgebra::*;
-use point::Point;
 use serde::Deserialize;
 
 use crate::utils::hyperpoint;
 
-use super::{color::RGBColor, hyperpoint::HyperObject, point};
+use super::{hyperpoint::HyperObject, point};
 
 /// Struct representing a point on the
 /// Klein disk model.

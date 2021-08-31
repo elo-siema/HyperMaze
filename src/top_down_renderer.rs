@@ -1,5 +1,4 @@
 use crate::constants::_ASPECT_RATIO;
-use crate::utils::color::RGBColor;
 use crate::{game::Game, utils::kleinpoint::*, utils::poincarepoint::*};
 use line_drawing::Bresenham;
 use macroquad::prelude::*;

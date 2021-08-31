@@ -1,5 +1,4 @@
 pub mod hypermap;
-pub mod textures;
 
 use macroquad::prelude::*;
 use macroquad::ui::*;

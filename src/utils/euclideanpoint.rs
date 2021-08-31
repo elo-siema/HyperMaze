@@ -1,4 +1,3 @@
-use super::color::*;
 use super::hyperpoint::*;
 use super::kleinpoint::*;
 use super::point::*;
