@@ -8,8 +8,8 @@ pub const GAME_CENTER_Y: f32 = GAME_SIZE_Y as f32 * 0.5f32;
 pub const _ASPECT_RATIO: f32 = GAME_SIZE_X as f32 / GAME_SIZE_Y as f32;
 
 pub const WALL_HEIGHT: f32 = 0.1;
-pub const MOVEMENT_SPEED: f32 = 0.3;
-pub const ROTATION_SPEED: f32 = 1.5;
+pub const MOVEMENT_SPEED: f64 = 0.3;
+pub const ROTATION_SPEED: f64 = 1.5;
 
 pub const COLLISION_RADIUS: f64 = 0.03;
 pub const EPSILON: f64 = 0.03;

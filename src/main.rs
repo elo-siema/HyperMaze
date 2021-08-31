@@ -48,28 +48,28 @@ async fn main() {
     loop {
         // Update the game
         let movement = if is_key_down(KEY_FASTER) {
-            MOVEMENT_SPEED * get_frame_time() * 2.
+            MOVEMENT_SPEED * get_frame_time() as f64 * 2.
         } else {
-            MOVEMENT_SPEED * get_frame_time()
+            MOVEMENT_SPEED * get_frame_time() as f64
         };
-        let rotation = ROTATION_SPEED * get_frame_time();
+        let rotation = ROTATION_SPEED * get_frame_time() as f64;
         if is_key_down(KEY_FORWARD) || is_key_down(KEY_FORWARD_ALT) {
-            game.move_player(-movement as f64);
+            game.move_player(-movement);
         }
         if is_key_down(KEY_BACKWARD) || is_key_down(KEY_BACKWARD_ALT) {
-            game.move_player(movement as f64);
+            game.move_player(movement);
         }
         if is_key_down(KEY_STRAFE_L) {
-            game.strafe_player(movement as f64);
+            game.strafe_player(movement);
         }
         if is_key_down(KEY_STRAFE_R) {
-            game.strafe_player(-movement as f64);
+            game.strafe_player(-movement);
         }
         if is_key_down(KEY_LEFT) {
-            game.rotate_player(-rotation as f64);
+            game.rotate_player(-rotation);
         }
         if is_key_down(KEY_RIGHT) {
-            game.rotate_player(rotation as f64);
+            game.rotate_player(rotation);
         }
         if is_key_down(KEY_EXIT) {
             std::process::exit(0);
