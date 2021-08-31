@@ -1,6 +1,6 @@
 use std::cmp::Ordering;
 
-use hyperpoint::{HyperWall, Hyperpoint};
+use hyperpoint::{HyperWall, HyperPoint};
 use nalgebra::*;
 use point::Point;
 use serde::Deserialize;
@@ -15,8 +15,8 @@ use super::{color::RGBColor, hyperpoint::HyperObject, point};
 #[derive(Clone, Debug, Deserialize)]
 pub struct KleinPoint(pub Point2<f64>);
 
-impl From<Hyperpoint> for KleinPoint {
-    fn from(hyperpoint: Hyperpoint) -> Self {
+impl From<HyperPoint> for KleinPoint {
+    fn from(hyperpoint: HyperPoint) -> Self {
         let denom = hyperpoint.0.x.powi(2)
             + hyperpoint.0.y.powi(2)
             + hyperpoint.0.z.powi(2)
@@ -28,8 +28,8 @@ impl From<Hyperpoint> for KleinPoint {
     }
 }
 
-impl From<&Hyperpoint> for KleinPoint {
-    fn from(hyperpoint: &Hyperpoint) -> Self {
+impl From<&HyperPoint> for KleinPoint {
+    fn from(hyperpoint: &HyperPoint) -> Self {
         let denom = hyperpoint.0.x.powi(2)
             + hyperpoint.0.y.powi(2)
             + hyperpoint.0.z.powi(2)

@@ -1,6 +1,6 @@
 use std::cmp::Ordering;
 
-use hyperpoint::{HyperWall, Hyperpoint};
+use hyperpoint::{HyperWall, HyperPoint};
 use nalgebra::*;
 use point::Point;
 use serde::Deserialize;
@@ -15,15 +15,15 @@ use super::{color::RGBColor, hyperpoint::HyperObject, point};
 #[derive(Clone, Debug, Deserialize)]
 pub struct PoincarePoint(pub Point2<f64>);
 
-impl From<Hyperpoint> for PoincarePoint {
-    fn from(hyperpoint: Hyperpoint) -> Self {
+impl From<HyperPoint> for PoincarePoint {
+    fn from(hyperpoint: HyperPoint) -> Self {
         let denom = hyperpoint.0[2] + 1.0;
         PoincarePoint::new(hyperpoint.0[0] / denom, hyperpoint.0[1] / denom)
     }
 }
 
-impl From<&Hyperpoint> for PoincarePoint {
-    fn from(hyperpoint: &Hyperpoint) -> Self {
+impl From<&HyperPoint> for PoincarePoint {
+    fn from(hyperpoint: &HyperPoint) -> Self {
         let denom = hyperpoint.0[2] + 1.0;
         PoincarePoint::new(hyperpoint.0[0] / denom, hyperpoint.0[1] / denom)
     }

@@ -4,7 +4,7 @@ use futures::executor;
 use macroquad::prelude::*;
 
 use crate::constants::*;
-use crate::{game::Game, utils::cartesianpoint::*, utils::kleinpoint::*, utils::poincarepoint::*};
+use crate::{game::Game, utils::euclideanpoint::*, utils::kleinpoint::*, utils::poincarepoint::*};
 
 /// Raycaster in hyperbolic space.
 pub struct FppRenderer {
@@ -60,26 +60,26 @@ impl FppRenderer {
             ..Default::default()
         });
 
-        let walls_cartesian = game.map.get_walls_iter().map(|wall| {
+        let walls_euclidean = game.map.get_walls_iter().map(|wall| {
             let wall = KleinWall::from(wall.clone());
             (&wall).into()
         });
 
-        for wall in walls_cartesian {
+        for wall in walls_euclidean {
             self.draw_wall(&wall);
         }
 
-        let objects_cartesian = game.map.get_objects_iter().map(|obj| {
+        let objects_euclidean = game.map.get_objects_iter().map(|obj| {
             let obj = KleinObject::from(obj.clone());
             (&obj).into()
         });
 
-        for obj in objects_cartesian {
+        for obj in objects_euclidean {
             self.draw_object(&obj);
         }
     }
 
-    fn draw_object(&self, object: &CartesianObject) {
+    fn draw_object(&self, object: &EuclideanObject) {
         if object.active {
             draw_sphere(
                 Vec3::new(object.position.x as f32, object.position.y as f32, 0.02),
@@ -102,7 +102,7 @@ impl FppRenderer {
         }
     }
 
-    fn draw_wall(&self, wall: &CartesianWall) {
+    fn draw_wall(&self, wall: &EuclideanWall) {
         //println!("Drawing wall, beg:{},{}, end:{},{}", wall.beginning.x, wall.beginning.y, wall.end.x, wall.end.y);
         let mesh = Mesh {
             vertices: vec![

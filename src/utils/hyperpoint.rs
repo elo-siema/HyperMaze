@@ -11,13 +11,13 @@ use serde::Deserialize;
 /// hyperboloid model.
 /// Wrapper for nalgebra's Point3.
 #[derive(Clone, Debug, Deserialize, Copy)]
-pub struct Hyperpoint(pub Point3<f64>);
+pub struct HyperPoint(pub Point3<f64>);
 
-impl From<PoincarePoint> for Hyperpoint {
+impl From<PoincarePoint> for HyperPoint {
     fn from(poincare_point: PoincarePoint) -> Self {
         //Minkowski metric
         let norm_squared = PoincarePoint::minkowski_dot(&poincare_point, &poincare_point);
-        Hyperpoint::new_with_z(
+        HyperPoint::new_with_z(
             (poincare_point.0[0] * 2.0) / (1.0 - norm_squared),
             (poincare_point.0[1] * 2.0) / (1.0 - norm_squared),
             (1.0 + norm_squared) / (1.0 - norm_squared),
@@ -25,20 +25,20 @@ impl From<PoincarePoint> for Hyperpoint {
     }
 }
 
-impl Hyperpoint {
+impl HyperPoint {
     /// Constructs the point given all coordinates.
     /// Does not check whether the point lies on the hyperboloid.
-    pub fn new_with_z(x: f64, y: f64, z: f64) -> Hyperpoint {
-        Hyperpoint {
+    pub fn new_with_z(x: f64, y: f64, z: f64) -> HyperPoint {
+        HyperPoint {
             0: Point3::<f64>::new(x, y, z),
         }
     }
 
     /// Constructs the point given x and y.
     /// Calculates z so it lies on the hyperboloid.
-    pub fn new(x: f64, y: f64) -> Hyperpoint {
+    pub fn new(x: f64, y: f64) -> HyperPoint {
         let z = (1.0 + x.powi(2) + y.powi(2)).sqrt();
-        Hyperpoint {
+        HyperPoint {
             0: Point3::<f64>::new(x, y, z),
         }
     }
@@ -69,10 +69,10 @@ impl Hyperpoint {
     }
 }
 
-impl point::Point for Hyperpoint {
+impl point::Point for HyperPoint {
     /// Return the Minkowski inner product of the two vectors provided, where the
     /// last co-ordinate is interpreted as being time-like.
-    fn minkowski_dot(a: &Hyperpoint, b: &Hyperpoint) -> f64 {
+    fn minkowski_dot(a: &HyperPoint, b: &HyperPoint) -> f64 {
         a.0[0] * b.0[0] + a.0[1] * b.0[1] - a.0[2] * b.0[2]
     }
 
@@ -84,7 +84,7 @@ impl point::Point for Hyperpoint {
 
     /// New point at 0, 0, 1.
     fn new_at_origin() -> Self {
-        Hyperpoint::new_with_z(0., 0., 1.)
+        HyperPoint::new_with_z(0., 0., 1.)
     }
 
     /// Distance to another point in the Minkowski hyperboloid metric.
@@ -101,8 +101,8 @@ impl point::Point for Hyperpoint {
 
 #[derive(Clone, Debug, Deserialize)]
 pub struct HyperWall {
-    pub beginning: Hyperpoint,
-    pub end: Hyperpoint,
+    pub beginning: HyperPoint,
+    pub end: HyperPoint,
     pub texture: String,
     pub height: f64,
 }
@@ -114,7 +114,7 @@ impl HyperWall {
     ///
     /// Potentially can be used for ditching the conversion to
     /// Poincare disk model for raycasting.
-    fn _find_plane_through_2_points_and_origin(p1: Hyperpoint, p2: Hyperpoint) -> (f64, f64, f64) {
+    fn _find_plane_through_2_points_and_origin(p1: HyperPoint, p2: HyperPoint) -> (f64, f64, f64) {
         let (ax, ay, az): (f64, f64, f64) = (p1.0[0], p1.0[1], p1.0[2]);
         let (bx, by, bz): (f64, f64, f64) = (p1.0[0], p1.0[1], p1.0[2]);
         let (cx, cy, cz) = (0., 0., 0.);
@@ -176,7 +176,7 @@ impl PartialOrd for HyperWall {
 
 #[derive(Deserialize)]
 pub struct HyperObject {
-    pub position: Hyperpoint,
+    pub position: HyperPoint,
     pub active: bool,
 }
 
