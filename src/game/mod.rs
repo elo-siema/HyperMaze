@@ -12,7 +12,6 @@ use crate::utils::kleinpoint::KleinWall;
 pub struct Game {
     /// The map of our virtual world
     pub map: HyperMap
-
 }
 
 impl Game {
@@ -180,7 +179,7 @@ mod tests {
         let expected = (0.5, 0.5);
         let result = line_circle_collision_avg(2., -1., -1., 2., 1.);
         assert_eq!(expected, result.unwrap());
-//
+
         let expected = (0.5, 0.5);
         let result = line_circle_collision_avg(-1., 2., 2.,-1., 1.);
         assert_eq!(expected, result.unwrap());
@@ -188,7 +187,5 @@ mod tests {
         let expected = (-0.5, 0.5);
         let result = line_circle_collision_avg(-1., 0., 0.,1., 1.);
         assert_eq!(expected, result.unwrap());
-
-
     }
 }
