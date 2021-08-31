@@ -12,7 +12,7 @@ use crate::utils::point::Point;
 /// Represents the state of our game's virtual world
 pub struct Game {
     /// The map of our virtual world
-    pub map: HyperMap
+    pub map: HyperMap,
 }
 
 impl Game {
@@ -53,28 +53,28 @@ impl Game {
     pub fn tick(&mut self) {
         self.solve_wall_collisions();
         self.solve_object_collisions();
-    }   
+    }
 
     fn solve_object_collisions(&mut self) {
-        self.map.get_objects_iter_mut()
-        .filter(|o| o.active)
-        .for_each(|o| {
-            let pos_klein = KleinPoint::from(o.position);
-            let distance = pos_klein.distance_to_origin();
+        self.map
+            .get_objects_iter_mut()
+            .filter(|o| o.active)
+            .for_each(|o| {
+                let pos_klein = KleinPoint::from(o.position);
+                let distance = pos_klein.distance_to_origin();
 
-            if distance < (OBJECT_RADIUS as f64 + COLLISION_RADIUS) {
-                o.active = false;
-            }
-        });
+                if distance < (OBJECT_RADIUS as f64 + COLLISION_RADIUS) {
+                    o.active = false;
+                }
+            });
     }
 
     fn solve_wall_collisions(&mut self) {
         // use klein because fuck it
-        let walls = self.map
-        .get_walls_iter()
-        .map(|wall| {
-            KleinWall::from(wall.clone())
-        });
+        let walls = self
+            .map
+            .get_walls_iter()
+            .map(|wall| KleinWall::from(wall.clone()));
 
         // First, find collisions with walls - approximate them to lines
         let corrections = walls.filter_map(|wall| {
@@ -82,27 +82,30 @@ impl Game {
             let y1 = wall.end.0.y;
             let x2 = wall.beginning.0.x;
             let y2 = wall.beginning.0.y;
-       
-            
+
             let lccollision = line_circle_collision_avg(x1, y1, x2, y2, COLLISION_RADIUS);
 
-            let distance = match lccollision{
+            let distance = match lccollision {
                 Some(lccolresult) => distance_between(lccolresult.0, lccolresult.1, 0., 0.),
-                None => f64::INFINITY
+                None => f64::INFINITY,
             };
 
-            let helper = distance_between(x1, y1, 0., 0.) + distance_between(x2, y2, 0., 0.) - distance_between(x1, y1, x2, y2);
+            let helper = distance_between(x1, y1, 0., 0.) + distance_between(x2, y2, 0., 0.)
+                - distance_between(x1, y1, x2, y2);
             let is_between = -EPSILON < helper && helper < EPSILON;
 
             let collision = distance < COLLISION_RADIUS && is_between;
 
-            if collision { 
-                //println!("collision at {} ", distance); 
+            if collision {
+                //println!("collision at {} ", distance);
 
-                let normal = Vec2::new(-lccollision.unwrap().0 as f32, lccollision.unwrap().1 as f32);
+                let normal = Vec2::new(
+                    -lccollision.unwrap().0 as f32,
+                    lccollision.unwrap().1 as f32,
+                );
                 let difference = distance - COLLISION_RADIUS;
-                //println!("difference: {} ", difference); 
-                
+                //println!("difference: {} ", difference);
+
                 let normal_scaled = normal.clamp_length_max(difference as f32);
 
                 return Some(normal_scaled);
@@ -114,33 +117,32 @@ impl Game {
         let mut vertices = vec![];
 
         self.map
-        .get_walls_iter()
-        .map(|wall| {
-            KleinWall::from(wall.clone())
-        }).for_each(|wall| {
-            // Get points coords along with vectors which point where to push player out
-            // beginning:
-            let beg_direction = Vec2::new(
-                (wall.beginning.0.x - wall.end.0.x) as f32, 
-                (wall.beginning.0.y - wall.end.0.y) as f32
-            ).normalize();
-            let beg = (wall.beginning.0.clone(), beg_direction);
-            vertices.push(beg);
-            // end:
-            let end_direction = Vec2::new(
-                (wall.end.0.x - wall.beginning.0.x) as f32, 
-                (wall.end.0.y - wall.beginning.0.y) as f32
-            ).normalize();
-            let end = (wall.end.0.clone(), end_direction);
-            vertices.push(end);
-        });
+            .get_walls_iter()
+            .map(|wall| KleinWall::from(wall.clone()))
+            .for_each(|wall| {
+                // Get points coords along with vectors which point where to push player out
+                // beginning:
+                let beg_direction = Vec2::new(
+                    (wall.beginning.0.x - wall.end.0.x) as f32,
+                    (wall.beginning.0.y - wall.end.0.y) as f32,
+                )
+                .normalize();
+                let beg = (wall.beginning.0.clone(), beg_direction);
+                vertices.push(beg);
+                // end:
+                let end_direction = Vec2::new(
+                    (wall.end.0.x - wall.beginning.0.x) as f32,
+                    (wall.end.0.y - wall.beginning.0.y) as f32,
+                )
+                .normalize();
+                let end = (wall.end.0.clone(), end_direction);
+                vertices.push(end);
+            });
 
-        let vertex_corrections = vertices
-        .iter()
-        .filter_map(|&tuple| {
+        let vertex_corrections = vertices.iter().filter_map(|&tuple| {
             let v = tuple.0;
             let direction = tuple.1;
-            
+
             let distance = distance_between(v.x, v.y, 0., 0.);
             let collision = distance < COLLISION_RADIUS;
             if collision {
@@ -155,10 +157,8 @@ impl Game {
 
         //Apply corrections from both sources
         let sum_corrections = corrections
-        .chain(vertex_corrections)
-        .reduce(|acc, correction| {
-            acc + correction
-        });
+            .chain(vertex_corrections)
+            .reduce(|acc, correction| acc + correction);
 
         if let Some(v) = sum_corrections {
             self.move_player_internal(v.x as f64, v.y as f64);
@@ -175,50 +175,50 @@ impl Game {
                 //.unwrap()
                 .text_color(Color::from_rgba(180, 0, 0, 255))
                 .font_size(50)
-                .margin(RectOffset{
+                .margin(RectOffset {
                     left: 10.,
                     top: 10.,
                     ..Default::default()
                 })
                 .build();
 
-                Skin {
-                    label_style, 
-                    ..root_ui().default_skin()
-                }
+            Skin {
+                label_style,
+                ..root_ui().default_skin()
+            }
         };
 
         root_ui().push_skin(&skin1);
 
         let total_objects = self.map.get_objects_iter().count();
-        let inactive_objects = self.map
-            .get_objects_iter()
-            .filter(|o| !o.active)
-            .count();
+        let inactive_objects = self.map.get_objects_iter().filter(|o| !o.active).count();
         if inactive_objects == total_objects {
             root_ui().label(None, "You won!");
         } else {
-            root_ui().label(None, &format!("{}/{} found...", inactive_objects, total_objects));
+            root_ui().label(
+                None,
+                &format!("{}/{} found...", inactive_objects, total_objects),
+            );
         }
     }
 }
 
 fn distance_between(ax: f64, ay: f64, bx: f64, by: f64) -> f64 {
-    ((ax-bx).powi(2) + (ay-by).powi(2)).sqrt()
+    ((ax - bx).powi(2) + (ay - by).powi(2)).sqrt()
 }
 
 fn line_circle_collision_avg(x1: f64, y1: f64, x2: f64, y2: f64, r: f64) -> Option<(f64, f64)> {
-    let a = (y2-y1)/(x2-x1);
+    let a = (y2 - y1) / (x2 - x1);
     let b = y1 - a * x1;
 
-    let common = ((a.powi(2)+1.)*r.powi(2) - b.powi(2)).sqrt();
+    let common = ((a.powi(2) + 1.) * r.powi(2) - b.powi(2)).sqrt();
     let denom = a.powi(2) + 1.;
 
-    let result_x1 = (-common - a*b)/denom;
-    let result_x2 = (common - a*b)/denom;
+    let result_x1 = (-common - a * b) / denom;
+    let result_x2 = (common - a * b) / denom;
 
-    let result_y1 = (b-a*common)/denom;
-    let result_y2 = (b+a*common)/denom;
+    let result_y1 = (b - a * common) / denom;
+    let result_y2 = (b + a * common) / denom;
 
     let result_x = (result_x1 + result_x2) / 2.;
     let result_y = (result_y1 + result_y2) / 2.;
@@ -235,11 +235,11 @@ mod tests {
         assert_eq!(expected, result.unwrap());
 
         let expected = (0.5, 0.5);
-        let result = line_circle_collision_avg(-1., 2., 2.,-1., 1.);
+        let result = line_circle_collision_avg(-1., 2., 2., -1., 1.);
         assert_eq!(expected, result.unwrap());
 
         let expected = (-0.5, 0.5);
-        let result = line_circle_collision_avg(-1., 0., 0.,1., 1.);
+        let result = line_circle_collision_avg(-1., 0., 0., 1., 1.);
         assert_eq!(expected, result.unwrap());
     }
 }

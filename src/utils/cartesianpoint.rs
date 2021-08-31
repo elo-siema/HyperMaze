@@ -1,20 +1,20 @@
-use crate::game::hypermap::HyperMap;
-use serde::Deserialize;
 use super::color::*;
 use super::hyperpoint::*;
-use super::point::*;
 use super::kleinpoint::*;
+use super::point::*;
+use crate::game::hypermap::HyperMap;
+use serde::Deserialize;
 
 pub struct CartesianPoint {
     pub x: f64,
-    pub y: f64
+    pub y: f64,
 }
 
-pub struct CartesianWall  {
+pub struct CartesianWall {
     pub beginning: CartesianPoint,
     pub end: CartesianPoint,
     pub texture: String,
-    pub height: f64
+    pub height: f64,
 }
 
 impl From<&Hyperpoint> for CartesianPoint {
@@ -51,7 +51,7 @@ impl From<&HyperWall> for CartesianWall {
             beginning: CartesianPoint::from(&h.beginning),
             end: CartesianPoint::from(&h.end),
             texture: h.texture.clone(),
-            height: h.height
+            height: h.height,
         }
     }
 }
@@ -62,20 +62,20 @@ impl From<&KleinWall> for CartesianWall {
             beginning: CartesianPoint::from(&h.beginning),
             end: CartesianPoint::from(&h.end),
             texture: h.texture.clone(),
-            height: h.height
+            height: h.height,
         }
     }
 }
 pub struct CartesianObject {
     pub position: CartesianPoint,
-    pub active: bool
+    pub active: bool,
 }
 
 impl From<&HyperObject> for CartesianObject {
     fn from(object: &HyperObject) -> CartesianObject {
         CartesianObject {
             position: CartesianPoint::from(&object.position),
-            active: object.active
+            active: object.active,
         }
     }
 }
@@ -84,7 +84,7 @@ impl From<&KleinObject> for CartesianObject {
     fn from(object: &KleinObject) -> CartesianObject {
         CartesianObject {
             position: CartesianPoint::from(&object.position),
-            active: object.active
+            active: object.active,
         }
     }
 }

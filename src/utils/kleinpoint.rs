@@ -17,7 +17,11 @@ pub struct KleinPoint(pub Point2<f64>);
 
 impl From<Hyperpoint> for KleinPoint {
     fn from(hyperpoint: Hyperpoint) -> Self {
-        let denom = hyperpoint.0.x.powi(2) + hyperpoint.0.y.powi(2) + hyperpoint.0.z.powi(2) + hyperpoint.0.z * 2.0 + 1.0;
+        let denom = hyperpoint.0.x.powi(2)
+            + hyperpoint.0.y.powi(2)
+            + hyperpoint.0.z.powi(2)
+            + hyperpoint.0.z * 2.0
+            + 1.0;
         let x = (2.0 * hyperpoint.0.x * (1.0 + hyperpoint.0.z)) / denom;
         let y = (2.0 * hyperpoint.0.y * (1.0 + hyperpoint.0.z)) / denom;
         KleinPoint::new(x, y)
@@ -26,7 +30,11 @@ impl From<Hyperpoint> for KleinPoint {
 
 impl From<&Hyperpoint> for KleinPoint {
     fn from(hyperpoint: &Hyperpoint) -> Self {
-        let denom = hyperpoint.0.x.powi(2) + hyperpoint.0.y.powi(2) + hyperpoint.0.z.powi(2) + hyperpoint.0.z * 2.0 + 1.0;
+        let denom = hyperpoint.0.x.powi(2)
+            + hyperpoint.0.y.powi(2)
+            + hyperpoint.0.z.powi(2)
+            + hyperpoint.0.z * 2.0
+            + 1.0;
         let x = (2.0 * hyperpoint.0.x * (1.0 + hyperpoint.0.z)) / denom;
         let y = (2.0 * hyperpoint.0.y * (1.0 + hyperpoint.0.z)) / denom;
         KleinPoint::new(x, y)
@@ -73,7 +81,7 @@ impl point::Point for KleinPoint {
 
     fn angle(&self) -> f64 {
         self.0.y.atan2(self.0.x)
-    }    
+    }
 }
 
 #[derive(Clone, Debug, Deserialize)]
@@ -81,7 +89,7 @@ pub struct KleinWall {
     pub beginning: KleinPoint,
     pub end: KleinPoint,
     pub texture: String,
-    pub height: f64
+    pub height: f64,
 }
 
 impl From<HyperWall> for KleinWall {
@@ -90,26 +98,24 @@ impl From<HyperWall> for KleinWall {
             beginning: hyperwall.beginning.into(),
             end: hyperwall.end.into(),
             texture: hyperwall.texture,
-            height: hyperwall.height
+            height: hyperwall.height,
         }
     }
 }
 
-
-impl KleinWall {
-}
+impl KleinWall {}
 
 #[derive(Deserialize)]
 pub struct KleinObject {
     pub position: KleinPoint,
-    pub active: bool
+    pub active: bool,
 }
 
 impl From<&HyperObject> for KleinObject {
     fn from(obj: &HyperObject) -> KleinObject {
         KleinObject {
             position: KleinPoint::from(&obj.position),
-            active: obj.active
+            active: obj.active,
         }
     }
 }

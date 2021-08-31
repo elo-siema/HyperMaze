@@ -81,7 +81,7 @@ impl point::Point for PoincarePoint {
 
     fn angle(&self) -> f64 {
         self.0.y.atan2(self.0.x)
-    }    
+    }
 }
 
 #[derive(Clone, Debug, Deserialize)]
@@ -89,7 +89,7 @@ pub struct PoincareWall {
     pub beginning: PoincarePoint,
     pub end: PoincarePoint,
     pub texture: String,
-    pub height: f64
+    pub height: f64,
 }
 
 impl From<HyperWall> for PoincareWall {
@@ -98,7 +98,7 @@ impl From<HyperWall> for PoincareWall {
             beginning: hyperwall.beginning.into(),
             end: hyperwall.end.into(),
             texture: hyperwall.texture,
-            height: hyperwall.height
+            height: hyperwall.height,
         }
     }
 }
@@ -213,14 +213,14 @@ impl PoincareWall {
 #[derive(Deserialize)]
 pub struct PoincareObject {
     pub position: PoincarePoint,
-    pub active: bool
+    pub active: bool,
 }
 
 impl From<&HyperObject> for PoincareObject {
     fn from(obj: &HyperObject) -> PoincareObject {
         PoincareObject {
             position: PoincarePoint::from(&obj.position),
-            active: obj.active
+            active: obj.active,
         }
     }
 }

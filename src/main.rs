@@ -1,15 +1,15 @@
 mod constants;
-mod game;
 mod fpp_renderer;
+mod game;
 mod top_down_renderer;
 mod utils;
 
-use futures::{executor, task::Spawn};
-use macroquad::prelude::*;
 use constants::*;
 use fpp_renderer::*;
-use top_down_renderer::*;
+use futures::{executor, task::Spawn};
 use game::*;
+use macroquad::prelude::*;
+use top_down_renderer::*;
 
 use crate::game::hypermap::HyperMap;
 
@@ -22,7 +22,7 @@ fn window_conf() -> Conf {
     }
 }
 
-fn show_loading(){
+fn show_loading() {
     clear_background(BLACK);
     draw_text("Loading...", 50., 100., 100., RED);
     draw_text("Tip: Press TAB for minimap", 50., 200., 50., RED);
@@ -30,7 +30,6 @@ fn show_loading(){
 
 #[macroquad::main(window_conf)]
 async fn main() {
-
     // Experiment determined that we need to display two frames
     // in order for the loading screen to be shown.
     show_loading();
@@ -48,24 +47,41 @@ async fn main() {
 
     loop {
         // Update the game
-        let movement = if is_key_down(KEY_FASTER) {MOVEMENT_SPEED*get_frame_time()*2.} else {MOVEMENT_SPEED*get_frame_time()};
-        let rotation = ROTATION_SPEED*get_frame_time();
-        if is_key_down(KEY_FORWARD) || is_key_down(KEY_FORWARD_ALT) { game.move_player(-movement as f64); }
-        if is_key_down(KEY_BACKWARD) || is_key_down(KEY_BACKWARD_ALT) { game.move_player(movement as f64); }
-        if is_key_down(KEY_STRAFE_L) { game.strafe_player(movement as f64); }
-        if is_key_down(KEY_STRAFE_R) { game.strafe_player(-movement as f64); }
-        if is_key_down(KEY_LEFT) { game.rotate_player(-rotation as f64); }
-        if is_key_down(KEY_RIGHT) { game.rotate_player(rotation as f64); }
-        if is_key_down(KEY_EXIT) { std::process::exit(0); }
+        let movement = if is_key_down(KEY_FASTER) {
+            MOVEMENT_SPEED * get_frame_time() * 2.
+        } else {
+            MOVEMENT_SPEED * get_frame_time()
+        };
+        let rotation = ROTATION_SPEED * get_frame_time();
+        if is_key_down(KEY_FORWARD) || is_key_down(KEY_FORWARD_ALT) {
+            game.move_player(-movement as f64);
+        }
+        if is_key_down(KEY_BACKWARD) || is_key_down(KEY_BACKWARD_ALT) {
+            game.move_player(movement as f64);
+        }
+        if is_key_down(KEY_STRAFE_L) {
+            game.strafe_player(movement as f64);
+        }
+        if is_key_down(KEY_STRAFE_R) {
+            game.strafe_player(-movement as f64);
+        }
+        if is_key_down(KEY_LEFT) {
+            game.rotate_player(-rotation as f64);
+        }
+        if is_key_down(KEY_RIGHT) {
+            game.rotate_player(rotation as f64);
+        }
+        if is_key_down(KEY_EXIT) {
+            std::process::exit(0);
+        }
 
         game.tick();
 
         // Render the game
-        if is_key_down(KEY_CHANGE_VIEW) { 
-            top_down_renderer.render(&game) 
-        }
-        else { 
-            fpp_renderer.render(&game); 
+        if is_key_down(KEY_CHANGE_VIEW) {
+            top_down_renderer.render(&game)
+        } else {
+            fpp_renderer.render(&game);
         }
         game.display_hud();
         next_frame().await

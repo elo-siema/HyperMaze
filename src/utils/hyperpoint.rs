@@ -104,7 +104,7 @@ pub struct HyperWall {
     pub beginning: Hyperpoint,
     pub end: Hyperpoint,
     pub texture: String,
-    pub height: f64
+    pub height: f64,
 }
 
 impl HyperWall {
@@ -147,7 +147,7 @@ impl From<PoincareWall> for HyperWall {
             beginning: poincare_wall.beginning.into(),
             end: poincare_wall.end.into(),
             texture: poincare_wall.texture,
-            height: poincare_wall.height
+            height: poincare_wall.height,
         }
     }
 }
@@ -174,18 +174,17 @@ impl PartialOrd for HyperWall {
     }
 }
 
-
 #[derive(Deserialize)]
 pub struct HyperObject {
     pub position: Hyperpoint,
-    pub active: bool
+    pub active: bool,
 }
 
 impl From<PoincareObject> for HyperObject {
     fn from(poincare_object: PoincareObject) -> HyperObject {
         HyperObject {
             position: poincare_object.position.into(),
-            active: poincare_object.active
+            active: poincare_object.active,
         }
     }
 }

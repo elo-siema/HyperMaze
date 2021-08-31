@@ -1,18 +1,17 @@
 use crate::utils::{hyperpoint::*, poincarepoint::*};
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 /// Represents the map in the Minkowski hyperboloid model.
 pub struct HyperMap {
     /// Walls of the map.
     walls: Vec<HyperWall>,
-    objects: Vec<HyperObject>
+    objects: Vec<HyperObject>,
 }
-
 
 #[derive(Deserialize)]
 struct PoincareMap {
     walls: Vec<PoincareWall>,
-    objects: Vec<PoincareObject>
+    objects: Vec<PoincareObject>,
 }
 
 impl HyperMap {
@@ -27,11 +26,12 @@ impl HyperMap {
         // Then transform them into the Minkowski Hyperboloid as internal representation.
         // This is done so it's easier to do transformations on the points
         let transformed_walls: Vec<HyperWall> = map.walls.into_iter().map(|w| w.into()).collect();
-        let transformed_objects: Vec<HyperObject> = map.objects.into_iter().map(|o| o.into()).collect();
+        let transformed_objects: Vec<HyperObject> =
+            map.objects.into_iter().map(|o| o.into()).collect();
 
         HyperMap {
             walls: transformed_walls,
-            objects: transformed_objects
+            objects: transformed_objects,
         }
     }
 
@@ -66,7 +66,7 @@ impl HyperMap {
         for object in &mut self.objects {
             object.position.rotate(step);
         }
-        
+
         // Keep walls sorted
         self.walls.sort_unstable();
     }
