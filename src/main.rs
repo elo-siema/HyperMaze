@@ -15,7 +15,7 @@ use crate::game::hypermap::HyperMap;
 
 fn window_conf() -> Conf {
     Conf {
-        window_title: "HyperCaster".to_owned(),
+        window_title: "HyperMaze".to_owned(),
         window_width: GAME_SIZE_X,
         window_height: GAME_SIZE_Y,
         ..Default::default()
