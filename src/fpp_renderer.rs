@@ -85,11 +85,11 @@ impl FppRenderer {
                 OBJECT_COLOR
             );
         } else {
-            draw_sphere_wires(
+            draw_sphere(
                 Vec3::new(object.position.x as f32, object.position.y as f32, 0.02), 
                 OBJECT_RADIUS, 
                 self.textures.get("MARBLE").unwrap().clone(), 
-                OBJECT_COLOR
+                Color{r: 0.5, g: 0.5, b: 0.5, a: 0.5},
             );
         }
     }
