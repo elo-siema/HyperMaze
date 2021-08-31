@@ -103,17 +103,33 @@ impl Game {
         .map(|wall| {
             KleinWall::from(wall.clone())
         }).for_each(|wall| {
-            vertices.push(wall.beginning.0.clone());
-            vertices.push(wall.end.0.clone());
+            // Get points coords along with vectors which point where to push player out
+            // beginning:
+            let beg_direction = Vec2::new(
+                (wall.beginning.0.x - wall.end.0.x) as f32, 
+                (wall.beginning.0.y - wall.end.0.y) as f32
+            ).normalize();
+            let beg = (wall.beginning.0.clone(), beg_direction);
+            vertices.push(beg);
+            // end:
+            let end_direction = Vec2::new(
+                (wall.end.0.x - wall.beginning.0.x) as f32, 
+                (wall.end.0.y - wall.beginning.0.y) as f32
+            ).normalize();
+            let end = (wall.end.0.clone(), end_direction);
+            vertices.push(end);
         });
 
         let vertex_corrections = vertices
         .iter()
-        .filter_map(|&v| {
+        .filter_map(|&tuple| {
+            let v = tuple.0;
+            let direction = tuple.1;
+            
             let distance = distance_between(v.x, v.y, 0., 0.);
             let collision = distance < COLLISION_RADIUS;
             if collision {
-                let normal = Vec2::new(-v.x as f32, -v.y as f32);
+                let normal = Vec2::new(-v.x as f32, -v.y as f32) + direction;
                 let difference = distance - COLLISION_RADIUS;
                 let normal_scaled = normal.clamp_length_max(difference as f32);
 
