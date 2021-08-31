@@ -3,12 +3,12 @@
         {
             "beginning":  [0.1, 0.1],
             "end":  [0.1, -0.1],
-            "texture": "wall",
+            "texture": "WALL",
             "height": 0.1
         },{
             "beginning":  [0.1, -0.1],
             "end":  [0.2, -0.1], 
-            "texture": "wall",
+            "texture": "CONCRETE",
             "height": 0.2
         }
     ],
@@ -19,7 +19,7 @@
         },
         {
             "position": [0.1, 0.1],
-            "active": false
+            "active": true
         }
     ]
 }

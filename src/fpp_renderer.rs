@@ -32,6 +32,7 @@ impl FppRenderer {
         let mut textures = HashMap::new();
         textures.insert("WALL".to_string(), load_texture("assets/textures/wall.png").await.unwrap());
         textures.insert("MARBLE".to_string(), load_texture("assets/textures/marble.png").await.unwrap());
+        textures.insert("CONCRETE".to_string(), load_texture("assets/textures/concrete.png").await.unwrap());
 
         textures
     }
@@ -42,7 +43,7 @@ impl FppRenderer {
     ///		- canvas		The canvas that should be drawn to.
     pub fn render(&self, game: &Game) {
         
-        clear_background(LIGHTGRAY);
+        clear_background(BLACK);
         Self::draw_floor();
 
         set_camera(&Camera3D {
@@ -121,7 +122,7 @@ impl FppRenderer {
             indices: vec![
                 0,1,2,1,2,3
             ],
-            texture: Some(self.textures.get("WALL").unwrap().clone()),
+            texture: Some(self.textures.get(&wall.texture).unwrap().clone()),
         };
         draw_mesh(&mesh);
     }

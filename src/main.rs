@@ -25,6 +25,7 @@ fn window_conf() -> Conf {
 fn show_loading(){
     clear_background(BLACK);
     draw_text("Loading...", 50., 100., 100., RED);
+    draw_text("Tip: Press TAB for minimap", 50., 200., 50., RED);
 }
 
 #[macroquad::main(window_conf)]
