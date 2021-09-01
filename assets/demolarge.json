@@ -1,0 +1,57 @@
+{
+    "walls": [
+        {
+            "beginning":  [0.1, 0.1],
+            "end":  [0.1, -0.1],
+            "texture": "WALL",
+            "height": 0.1
+        },{
+            "beginning":  [0.1, 0.1],
+            "end":  [0.2, 0.1],
+            "texture": "WALL",
+            "height": 0.1
+        },{
+            "beginning":  [0.1, -0.1],
+            "end":  [0.2, -0.1],
+            "texture": "WALL",
+            "height": 0.1
+        },{
+            "beginning":  [0.2, 0.1],
+            "end":  [0.2, -0.1],
+            "texture": "WALL",
+            "height": 0.1
+        },
+
+        {
+            "beginning":  [-0.1, 0.1],
+            "end":  [-0.1, -0.1],
+            "texture": "CONCRETE",
+            "height": 0.1
+        },{
+            "beginning":  [-0.1, 0.1],
+            "end":  [-0.2, 0.1],
+            "texture": "CONCRETE",
+            "height": 0.1
+        },{
+            "beginning":  [-0.2, 0.1],
+            "end":  [-0.2, -0.1],
+            "texture": "CONCRETE",
+            "height": 0.1
+        },{
+            "beginning":  [-0.1, -0.1],
+            "end":  [-0.2, -0.1],
+            "texture": "CONCRETE",
+            "height": 0.1
+        }
+    ],
+    "objects": [
+        {
+            "position": [0.2, 0.1],
+            "active": true
+        },
+        {
+            "position": [0.1, 0.1],
+            "active": true
+        }
+    ]
+}

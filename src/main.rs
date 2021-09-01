@@ -38,7 +38,7 @@ async fn main() {
     next_frame().await;
 
     // Initialize the game
-    let mut game = Game::new(HyperMap::new(include_str!("../assets/demotext.json")));
+    let mut game = Game::new(HyperMap::new(include_str!("../assets/demolarge.json")));
 
     // Initialize the renderers. This takes a bit of time
     // because it needs to load the textures.
