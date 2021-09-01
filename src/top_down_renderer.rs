@@ -1,5 +1,5 @@
 use crate::constants::_ASPECT_RATIO;
-use crate::{game::Game, utils::kleinpoint::*, utils::poincarepoint::*};
+use crate::{game::Game, utils::kleinpoint::*};
 use macroquad::prelude::*;
 
 /// Draws a top-down view on a Poincare disk.
@@ -37,18 +37,6 @@ impl TopDownRenderer {
         });
     }
 
-    // Draws wall as a line on the Poincare disk model.
-    fn draw_wall_poincare(&self, wall: &PoincareWall) {
-        draw_line(
-            wall.beginning.0.x as f32,
-            wall.beginning.0.y as f32,
-            wall.end.0.x as f32,
-            wall.end.0.y as f32,
-            0.005,
-            BLUE,
-        );
-    }
-
     fn draw_wall_klein(&self, wall: &KleinWall) {
         draw_line(
             wall.beginning.0.x as f32,
@@ -58,25 +46,6 @@ impl TopDownRenderer {
             0.005,
             BLUE,
         );
-    }
-
-    fn draw_object_poincare(&self, object: &PoincareObject) {
-        if object.active {
-            draw_circle(
-                object.position.0.x as f32,
-                object.position.0.y as f32,
-                0.005,
-                RED,
-            );
-        } else {
-            draw_circle_lines(
-                object.position.0.x as f32,
-                object.position.0.y as f32,
-                0.005,
-                0.003,
-                RED,
-            );
-        }
     }
 
     fn draw_object_klein(&self, object: &KleinObject) {
