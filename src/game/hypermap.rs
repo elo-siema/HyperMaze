@@ -1,5 +1,5 @@
 use crate::utils::{hyperpoint::*, poincarepoint::*};
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize};
 
 /// Represents the map in the Minkowski hyperboloid model.
 pub struct HyperMap {
@@ -48,14 +48,6 @@ impl HyperMap {
         self.objects.iter()
     }
 
-    /// Returns iterator of PoincareWall references.
-    pub fn get_walls_as_poincare(&self) -> Vec<PoincareWall> {
-        let wallsp: Vec<PoincareWall> = self.walls.iter().map(|hw| hw.clone().into()).collect(); //todo: don't clone
-                                                                                                 //not sorting, because we're iterating through them all anyway
-                                                                                                 //wallsp.sort_by(|a, b| a.distance_to_origin().partial_cmp(&b.distance_to_origin()).unwrap() );
-        wallsp
-    }
-
     /// Rotate all walls around an origin.
     pub fn rotate(&mut self, step: f64) {
         for wall in &mut self.walls {
@@ -66,9 +58,6 @@ impl HyperMap {
         for object in &mut self.objects {
             object.position.rotate(step);
         }
-
-        // Keep walls sorted
-        self.walls.sort_unstable();
     }
 
     /// Move all walls along the x and y axes.
