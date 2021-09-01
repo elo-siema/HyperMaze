@@ -115,7 +115,7 @@ impl FppRenderer {
                     position: Vec3::new(
                         wall.beginning.x as f32,
                         wall.beginning.y as f32,
-                        WALL_HEIGHT,
+                        wall.height as f32,
                     ),
                     uv: Vec2::new(0., 1.),
                     color: WHITE,
@@ -126,7 +126,7 @@ impl FppRenderer {
                     color: WHITE,
                 },
                 macroquad::models::Vertex {
-                    position: Vec3::new(wall.end.x as f32, wall.end.y as f32, WALL_HEIGHT),
+                    position: Vec3::new(wall.end.x as f32, wall.end.y as f32, wall.height as f32),
                     uv: Vec2::new(1., 1.),
                     color: WHITE,
                 },
