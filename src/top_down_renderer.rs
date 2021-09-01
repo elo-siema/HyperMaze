@@ -1,6 +1,5 @@
 use crate::constants::_ASPECT_RATIO;
 use crate::{game::Game, utils::kleinpoint::*, utils::poincarepoint::*};
-use line_drawing::Bresenham;
 use macroquad::prelude::*;
 
 /// Draws a top-down view on a Poincare disk.
