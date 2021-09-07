@@ -214,3 +214,12 @@ impl From<PoincareObject> for HyperObject {
         }
     }
 }
+
+impl From<KleinObject> for HyperObject {
+    fn from(klein_object: KleinObject) -> HyperObject {
+        HyperObject {
+            position: klein_object.position.into(),
+            active: klein_object.active,
+        }
+    }
+}

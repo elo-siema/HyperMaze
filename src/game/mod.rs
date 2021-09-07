@@ -162,33 +162,12 @@ impl Game {
 
         if let Some(v) = sum_corrections {
             self.move_player_internal(v.x as f64, v.y as f64);
-            println!("Correcting player position by x:{}, y:{}", v.x, v.y);
+            //println!("Correcting player position by x:{}, y:{}", v.x, v.y);
         }
     }
 
     pub fn display_hud(&self) {
-        //style ui:
-        let skin1 = {
-            let label_style = root_ui()
-                .style_builder()
-                //.font(include_bytes!("../examples/ui_assets/HTOWERT.TTF"))
-                //.unwrap()
-                .text_color(Color::from_rgba(180, 0, 0, 255))
-                .font_size(50)
-                .margin(RectOffset {
-                    left: 10.,
-                    top: 10.,
-                    ..Default::default()
-                })
-                .build();
 
-            Skin {
-                label_style,
-                ..root_ui().default_skin()
-            }
-        };
-
-        root_ui().push_skin(&skin1);
 
         let total_objects = self.map.get_objects_iter().count();
         let inactive_objects = self.map.get_objects_iter().filter(|o| !o.active).count();

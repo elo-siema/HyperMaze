@@ -1,9 +1,9 @@
 use svg::node::element::path::{Command, Data};
-use svg::node::element::tag::Line;
+use svg::node::element::tag::*;
 use svg::parser::Event;
 use super::HyperMap;
 use crate::utils::*;
-use crate::utils::hyperpoint::HyperWall;
+use crate::utils::hyperpoint::*;
 use crate::utils::kleinpoint::*;
 use crate::constants::*;
 
@@ -30,11 +30,33 @@ pub fn load_map(path: &str) -> HyperMap {
 
                 Some(wall)
             }
+
             _ => None
         }
     }).map(|w| HyperWall::from(w)).collect();
 
-    let map = HyperMap::new_with(walls, vec![]);
+    let mut content = String::new();
+    let objects: Vec<_> = svg::open(path, &mut content).unwrap().filter_map(|event| {
+        match event {
+            Event::Tag(Ellipse, _, attributes) => {
+                let id = attributes.get("id").unwrap();
+                let stroke = attributes.get("stroke").unwrap();
+                let x = attributes.get("cx").unwrap().parse::<f64>().unwrap() / 1000. - 1.;
+                let y = attributes.get("cy").unwrap().parse::<f64>().unwrap() / 1000. - 1.;
+
+                let position = KleinPoint::new(x, y);
+                let object = KleinObject{
+                    position: position,
+                    active: true
+                };
+
+                Some(object)
+            }
+            _ => None
+        }
+    }).map(|o| HyperObject::from(o)).collect();
+
+    let map = HyperMap::new_with(walls, objects);
     map
 }
 

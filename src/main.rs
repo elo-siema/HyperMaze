@@ -8,7 +8,7 @@ use constants::*;
 use fpp_renderer::*;
 use futures::{executor, task::Spawn};
 use game::*;
-use macroquad::prelude::*;
+use macroquad::{prelude::*, ui::*};
 use top_down_renderer::*;
 use svgloader::*;
 
@@ -23,23 +23,50 @@ fn window_conf() -> Conf {
     }
 }
 
+fn style_ui() {
+    //style ui:
+    let skin1 = {
+        let label_style = root_ui()
+            .style_builder()
+            .font(include_bytes!("../assets/BebasNeue-Regular.ttf"))
+            .unwrap()
+            .text_color(Color::from_rgba(180, 0, 0, 255))
+            .font_size(50)
+            .margin(RectOffset {
+                left: 10.,
+                top: 10.,
+                ..Default::default()
+            })
+            .build();
+        Skin {
+            label_style,
+            ..root_ui().default_skin()
+        }
+    };
+
+    root_ui().push_skin(&skin1);
+}
+
 fn show_loading() {
     clear_background(BLACK);
-    draw_text("Loading...", 50., 100., 100., RED);
-    draw_text("Tip: Press TAB for minimap", 50., 200., 50., RED);
+    root_ui().label(None, "Loading...");
+    root_ui().label(None, "Tip: Press TAB for minimap");
 }
 
 #[macroquad::main(window_conf)]
 async fn main() {
-    let map = load_map("assets/map.svg");
+    // Apply styles
+    style_ui();
+    
     // Experiment determined that we need to display two frames
     // in order for the loading screen to be shown.
     show_loading();
     next_frame().await;
-    show_loading();
+    //show_loading();
     next_frame().await;
 
     // Initialize the game
+    let map = load_map("assets/map2.svg");
     let mut game = Game::new(map);
     
     //let mut game = Game::new(HyperMap::new(include_str!("../assets/demolarge.json")));
