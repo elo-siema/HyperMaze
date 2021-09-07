@@ -35,6 +35,13 @@ impl HyperMap {
         }
     }
 
+    pub fn new_with(walls: Vec<HyperWall>, objects: Vec<HyperObject>,) -> HyperMap {
+        HyperMap {
+            walls: walls,
+            objects: objects,
+        }
+    }
+
     /// Returns iterator of HyperWall references.
     pub fn get_walls_iter(&self) -> impl Iterator<Item = &HyperWall> {
         self.walls.iter()

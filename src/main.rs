@@ -10,6 +10,7 @@ use futures::{executor, task::Spawn};
 use game::*;
 use macroquad::prelude::*;
 use top_down_renderer::*;
+use svgloader::*;
 
 use crate::game::hypermap::HyperMap;
 
@@ -30,6 +31,7 @@ fn show_loading() {
 
 #[macroquad::main(window_conf)]
 async fn main() {
+    let map = load_map("assets/map.svg");
     // Experiment determined that we need to display two frames
     // in order for the loading screen to be shown.
     show_loading();
@@ -38,7 +40,9 @@ async fn main() {
     next_frame().await;
 
     // Initialize the game
-    let mut game = Game::new(HyperMap::new(include_str!("../assets/demolarge.json")));
+    let mut game = Game::new(map);
+    
+    //let mut game = Game::new(HyperMap::new(include_str!("../assets/demolarge.json")));
 
     // Initialize the renderers. This takes a bit of time
     // because it needs to load the textures.

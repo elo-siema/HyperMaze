@@ -1,4 +1,5 @@
 pub mod hypermap;
+pub mod svgloader;
 
 use macroquad::prelude::*;
 use macroquad::ui::*;

@@ -11,6 +11,7 @@ serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 nalgebra = {version = "*", features = ["serde-serialize"]}
 futures = {version = "0.3", features = ["thread-pool"]}
+svg = "0.10.0"
 
 [profile.dev]
 opt-level = 0

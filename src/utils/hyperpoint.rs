@@ -4,6 +4,7 @@ use crate::utils::*;
 use cmp::Ordering;
 use nalgebra::*;
 use poincarepoint::*;
+use kleinpoint::*;
 use point::{Point, Wall};
 use serde::Deserialize;
 
@@ -22,6 +23,20 @@ impl From<PoincarePoint> for HyperPoint {
             (poincare_point.0[1] * 2.0) / (1.0 - norm_squared),
             (1.0 + norm_squared) / (1.0 - norm_squared),
         )
+    }
+}
+
+impl From<KleinPoint> for HyperPoint {
+    fn from(klein_point: KleinPoint) -> Self {
+        let denom: f64 = (
+            -(klein_point.0.x.powi(2))
+            -(klein_point.0.y.powi(2))
+            +1.)
+            .sqrt();
+        let x = klein_point.0.x/denom;
+        let y = klein_point.0.y/denom;
+        let z = 1./denom;
+        HyperPoint::new_with_z(x,y,z)
     }
 }
 
@@ -148,6 +163,17 @@ impl From<PoincareWall> for HyperWall {
             end: poincare_wall.end.into(),
             texture: poincare_wall.texture,
             height: poincare_wall.height,
+        }
+    }
+}
+
+impl From<KleinWall> for HyperWall {
+    fn from(klein_wall: KleinWall) -> HyperWall {
+        HyperWall {
+            beginning: klein_wall.beginning.into(),
+            end: klein_wall.end.into(),
+            texture: klein_wall.texture,
+            height: klein_wall.height,
         }
     }
 }
