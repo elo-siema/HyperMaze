@@ -7,9 +7,8 @@ use crate::utils::hyperpoint::*;
 use crate::utils::kleinpoint::*;
 use crate::constants::*;
 
-pub fn load_map(path: &str) -> HyperMap {
-    let mut content = String::new();
-    let walls: Vec<_> = svg::open(path, &mut content).unwrap().filter_map(|event| {
+pub fn load_map(content: &str) -> HyperMap {
+    let walls: Vec<_> = svg::read(content).unwrap().filter_map(|event| {
         match event {
             Event::Tag(Line, _, attributes) => {
                 let id = attributes.get("id").unwrap();
@@ -35,8 +34,7 @@ pub fn load_map(path: &str) -> HyperMap {
         }
     }).map(|w| HyperWall::from(w)).collect();
 
-    let mut content = String::new();
-    let objects: Vec<_> = svg::open(path, &mut content).unwrap().filter_map(|event| {
+    let objects: Vec<_> = svg::read(content).unwrap().filter_map(|event| {
         match event {
             Event::Tag(Ellipse, _, attributes) => {
                 let id = attributes.get("id").unwrap();

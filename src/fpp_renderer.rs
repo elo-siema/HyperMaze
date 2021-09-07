@@ -31,15 +31,15 @@ impl FppRenderer {
         let mut textures = HashMap::new();
         textures.insert(
             "WALL".to_string(),
-            load_texture("assets/textures/wall.png").await.unwrap(),
+            Texture2D::from_file_with_format(include_bytes!("../assets/textures/wall.png"), None)
         );
         textures.insert(
             "MARBLE".to_string(),
-            load_texture("assets/textures/marble.png").await.unwrap(),
+            Texture2D::from_file_with_format(include_bytes!("../assets/textures/marble.png"), None)
         );
         textures.insert(
             "CONCRETE".to_string(),
-            load_texture("assets/textures/concrete.png").await.unwrap(),
+            Texture2D::from_file_with_format(include_bytes!("../assets/textures/concrete.png"), None)
         );
 
         textures
