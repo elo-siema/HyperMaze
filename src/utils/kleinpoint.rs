@@ -59,19 +59,12 @@ impl point::Point for KleinPoint {
         eucl.atanh()
     }
 
-    /*fn distance_to_origin(&self) -> f64 {
-        let euclidian_distance =
-            (self.0[0].powi(2) + self.0[1].powi(2))
-            .sqrt();
-        euclidian_distance
-    }*/
-
     /// New point at 0, 0.
     fn new_at_origin() -> Self {
         KleinPoint::new(0., 0.)
     }
 
-    /// Distance to another point in the Klein metric.
+    /// Distance to another point in the Klein metric. UNIMPLEMENTED
     fn distance_to(&self, to: &Self) -> f64 {
         0.
     }
@@ -99,8 +92,6 @@ impl From<HyperWall> for KleinWall {
         }
     }
 }
-
-impl KleinWall {}
 
 #[derive(Deserialize)]
 pub struct KleinObject {

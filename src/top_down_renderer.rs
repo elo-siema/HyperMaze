@@ -2,7 +2,7 @@ use crate::constants::_ASPECT_RATIO;
 use crate::{game::Game, utils::kleinpoint::*};
 use macroquad::prelude::*;
 
-/// Draws a top-down view on a Poincare disk.
+/// Draws a top-down view on a Klein disk.
 pub struct TopDownRenderer {}
 
 impl TopDownRenderer {

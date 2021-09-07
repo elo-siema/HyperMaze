@@ -55,6 +55,7 @@ impl Game {
         self.solve_object_collisions();
     }
 
+    /// Detects collisions with objects, marks them as collected.
     fn solve_object_collisions(&mut self) {
         self.map
             .get_objects_iter_mut()
@@ -69,8 +70,8 @@ impl Game {
             });
     }
 
+    /// Detects collisions with walls, adjusts players position.
     fn solve_wall_collisions(&mut self) {
-        // use klein because fuck it
         let walls = self
             .map
             .get_walls_iter()
@@ -166,9 +167,8 @@ impl Game {
         }
     }
 
+    /// Displays current score / information about win.
     pub fn display_hud(&self) {
-
-
         let total_objects = self.map.get_objects_iter().count();
         let inactive_objects = self.map.get_objects_iter().filter(|o| !o.active).count();
         if inactive_objects == total_objects {
@@ -182,10 +182,12 @@ impl Game {
     }
 }
 
+/// Helper function. Euclidean distance between 2 points.
 fn distance_between(ax: f64, ay: f64, bx: f64, by: f64) -> f64 {
     ((ax - bx).powi(2) + (ay - by).powi(2)).sqrt()
 }
 
+/// Helper function. Finds approximate point on a line which collides with circle at (0,0).
 fn line_circle_collision_avg(x1: f64, y1: f64, x2: f64, y2: f64, r: f64) -> Option<(f64, f64)> {
     let a = (y2 - y1) / (x2 - x1);
     let b = y1 - a * x1;
@@ -204,6 +206,7 @@ fn line_circle_collision_avg(x1: f64, y1: f64, x2: f64, y2: f64, r: f64) -> Opti
 
     Some((result_x, result_y))
 }
+
 #[cfg(test)]
 mod tests {
     use super::*;

@@ -6,14 +6,12 @@ mod utils;
 
 use constants::*;
 use fpp_renderer::*;
-use futures::{executor, task::Spawn};
 use game::*;
 use macroquad::{prelude::*, ui::*};
 use top_down_renderer::*;
 use svgloader::*;
 
-use crate::game::hypermap::HyperMap;
-
+/// Creates window configuration.
 fn window_conf() -> Conf {
     Conf {
         window_title: "HyperMaze".to_owned(),
@@ -23,6 +21,7 @@ fn window_conf() -> Conf {
     }
 }
 
+/// Applies styles to text displayed on the screen.
 fn style_ui() {
     //style ui:
     let skin1 = {
@@ -47,12 +46,14 @@ fn style_ui() {
     root_ui().push_skin(&skin1);
 }
 
+/// Shows loading screen.
 fn show_loading() {
     clear_background(BLACK);
     root_ui().label(None, "Loading...");
     root_ui().label(None, "Tip: Press TAB for minimap");
 }
 
+/// Main function.
 #[macroquad::main(window_conf)]
 async fn main() {
     // Apply styles
@@ -70,7 +71,7 @@ async fn main() {
 
     // Initialize the renderers. This takes a bit of time
     // because it needs to load the textures.
-    let fpp_renderer = executor::block_on(FppRenderer::new());
+    let fpp_renderer = FppRenderer::new();
     let top_down_renderer = TopDownRenderer::new();
 
     loop {

@@ -6,28 +6,23 @@ use macroquad::prelude::*;
 use crate::constants::*;
 use crate::{game::Game, utils::euclideanpoint::*, utils::kleinpoint::*, utils::poincarepoint::*};
 
-/// Raycaster in hyperbolic space.
+/// FPP renderer in hyperbolic space.
+/// Converts world from hyperboloid to Klein model,
+/// then uses polar coordinates using the Klein metric to
+/// map walls and objects to Euclidean space and render them.
 pub struct FppRenderer {
     textures: HashMap<String, Texture2D>,
 }
-
 impl FppRenderer {
-    /// Initializes the renderer with a map, a player and a focal length that should be used for rendering.
-    ///
-    /// # Parameters:
-    /// 	- game:						The virtual world state (i.e. the game's map and player position)
-    ///		- relative_screen_size:		The size of the physical computer display in relation to a grid field
-    ///  	- focal_length:				A focal length that should be used for rendering.
-    ///	 	- illumination_radius:		The radius around the player where objects should appear illuminated.
-    ///	 	- minimum_öight:			The minimum environment light of the scene.
-    ///
-    pub async fn new() -> FppRenderer {
+    /// Initializes the renderer, loads textures.
+    pub fn new() -> FppRenderer {
         FppRenderer {
-            textures: Self::load_textures().await,
+            textures: Self::load_textures(),
         }
     }
 
-    async fn load_textures() -> HashMap<String, Texture2D> {
+    /// Load textures. They are included in the executable at compile time.
+    fn load_textures() -> HashMap<String, Texture2D> {
         let mut textures = HashMap::new();
         textures.insert(
             "WALL".to_string(),
@@ -45,10 +40,7 @@ impl FppRenderer {
         textures
     }
 
-    /// Renders one frame into a canvas.
-    ///
-    /// # Parameters:
-    ///		- canvas		The canvas that should be drawn to.
+    /// Renders one frame into the screen.
     pub fn render(&self, game: &Game) {
         clear_background(BLACK);
         Self::draw_floor();
@@ -79,6 +71,7 @@ impl FppRenderer {
         }
     }
 
+    /// Draws textured sphere.
     fn draw_object(&self, object: &EuclideanObject) {
         if object.active {
             draw_sphere(
@@ -102,6 +95,7 @@ impl FppRenderer {
         }
     }
 
+    /// Draws textured wall.
     fn draw_wall(&self, wall: &EuclideanWall) {
         //println!("Drawing wall, beg:{},{}, end:{},{}", wall.beginning.x, wall.beginning.y, wall.end.x, wall.end.y);
         let mesh = Mesh {
@@ -137,6 +131,7 @@ impl FppRenderer {
         draw_mesh(&mesh);
     }
 
+    /// Draws floor as a large gray flat surface.
     fn draw_floor() {
         let mesh = Mesh {
             vertices: vec![

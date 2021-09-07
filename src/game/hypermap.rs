@@ -47,10 +47,12 @@ impl HyperMap {
         self.walls.iter()
     }
 
+    /// Returns mutable iterator of HyperObject references.
     pub fn get_objects_iter_mut(&mut self) -> impl Iterator<Item = &mut HyperObject> {
         self.objects.iter_mut()
     }
 
+    /// Returns iterator of HyperObject references.
     pub fn get_objects_iter(&self) -> impl Iterator<Item = &HyperObject> {
         self.objects.iter()
     }
@@ -77,8 +79,5 @@ impl HyperMap {
         for object in &mut self.objects {
             object.position.translate(x, y);
         }
-
-        // Keep walls sorted
-        self.walls.sort_unstable();
     }
 }
