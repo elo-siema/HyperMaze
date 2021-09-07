@@ -66,7 +66,7 @@ async fn main() {
     next_frame().await;
 
     // Initialize the game
-    let map = load_map(include_str!("../assets/map2.svg"));
+    let map = load_map(include_str!("../assets/map3.svg"));
     let mut game = Game::new(map);
 
     // Initialize the renderers. This takes a bit of time

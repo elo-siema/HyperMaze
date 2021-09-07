@@ -13,6 +13,7 @@ pub fn load_map(content: &str) -> HyperMap {
             Event::Tag(Line, _, attributes) => {
                 let id = attributes.get("id").unwrap();
                 let stroke = attributes.get("stroke").unwrap();
+                let class = attributes.get("class");
                 let x1 = attributes.get("x1").unwrap().parse::<f64>().unwrap() / 1000. - 1.;
                 let x2 = attributes.get("x2").unwrap().parse::<f64>().unwrap() / 1000. - 1.;
                 let y1 = attributes.get("y1").unwrap().parse::<f64>().unwrap() / 1000. - 1.;
@@ -23,7 +24,10 @@ pub fn load_map(content: &str) -> HyperMap {
                 let wall = KleinWall{
                     beginning: beginning,
                     end: end,
-                    texture: "WALL".to_string(),
+                    texture: match class {
+                        Some(val) => val.to_string(),
+                        None => "WALL".to_string(),
+                    },
                     height: WALL_HEIGHT as f64,
                 };
 

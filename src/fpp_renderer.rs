@@ -36,6 +36,30 @@ impl FppRenderer {
             "CONCRETE".to_string(),
             Texture2D::from_file_with_format(include_bytes!("../assets/textures/concrete.png"), None)
         );
+        textures.insert(
+            "wall1".to_string(),
+            Texture2D::from_file_with_format(include_bytes!("../assets/textures/wall.png"), None)
+        );
+        textures.insert(
+            "wall2".to_string(),
+            Texture2D::from_file_with_format(include_bytes!("../assets/textures/wall2.png"), None)
+        );
+        textures.insert(
+            "wall3".to_string(),
+            Texture2D::from_file_with_format(include_bytes!("../assets/textures/wall3.png"), None)
+        );
+        textures.insert(
+            "wall4".to_string(),
+            Texture2D::from_file_with_format(include_bytes!("../assets/textures/wall4.png"), None)
+        );
+        textures.insert(
+            "wall5".to_string(),
+            Texture2D::from_file_with_format(include_bytes!("../assets/textures/wall5.png"), None)
+        );
+        textures.insert(
+            "wall6".to_string(),
+            Texture2D::from_file_with_format(include_bytes!("../assets/textures/wall6.png"), None)
+        );
 
         textures
     }
