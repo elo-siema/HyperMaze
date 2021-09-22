@@ -2,6 +2,7 @@ mod constants;
 mod fpp_renderer;
 mod game;
 mod top_down_renderer;
+mod poincare_renderer;
 mod utils;
 
 use constants::*;
@@ -9,6 +10,7 @@ use fpp_renderer::*;
 use game::*;
 use macroquad::{prelude::*, ui::*};
 use top_down_renderer::*;
+use poincare_renderer::*;
 use svgloader::*;
 
 /// Creates window configuration.
@@ -73,6 +75,7 @@ async fn main() {
     // because it needs to load the textures.
     let fpp_renderer = FppRenderer::new();
     let top_down_renderer = TopDownRenderer::new();
+    let poincare_renderer = PoincareRenderer::new();
 
     loop {
         // Update the game
@@ -108,7 +111,9 @@ async fn main() {
 
         // Render the game
         if is_key_down(KEY_CHANGE_VIEW) {
-            top_down_renderer.render(&game)
+            top_down_renderer.render(&game);
+        } else if is_key_down(macroquad::prelude::KeyCode::P) {
+            poincare_renderer.render(&game);
         } else {
             fpp_renderer.render(&game);
         }
