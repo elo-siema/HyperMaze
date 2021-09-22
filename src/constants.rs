@@ -23,6 +23,7 @@ pub const KEY_STRAFE_R: KeyCode = KeyCode::D;
 pub const KEY_FASTER: KeyCode = KeyCode::LeftShift;
 pub const KEY_EXIT: KeyCode = KeyCode::Escape;
 pub const KEY_CHANGE_VIEW: KeyCode = KeyCode::Tab;
+pub const KEY_CHANGE_VIEW_POINCARE: KeyCode = KeyCode::P;
 
 pub const OBJECT_RADIUS: f32 = 0.02;
 pub const OBJECT_COLOR: Color = WHITE;
