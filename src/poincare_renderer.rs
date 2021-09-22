@@ -80,17 +80,32 @@ impl PoincareRenderer {
         let det14 = minor14.determinant();
 
         let x0 = 0.5 * (det12/det11);
-        let y0 = 0.5 * (det13/det11);
-        let r = (x0.powi(2) + y0.powi(2)).sqrt();
+        let y0 = -0.5 * (det13/det11);
+        let r = (x0.powi(2) + y0.powi(2) + det14/det11).sqrt();
 
         println!("x0: {:?}, y0: {:?}, r: {:?}", x0, y0, r);
 
+        // draw the circle on which the wall lies
         draw_circle_lines(
             x0 as f32,
             y0 as f32, 
             r as f32,
             0.003,
             GRAY
+        );
+
+        // mark beginning, end of walls
+        draw_circle(
+            x1 as f32,
+            y1 as f32,
+            0.005,
+            YELLOW,
+        );
+        draw_circle(
+            x2 as f32,
+            y2 as f32,
+            0.005,
+            YELLOW,
         );
 
         //draw_line(
