@@ -53,6 +53,7 @@ fn show_loading() {
     clear_background(BLACK);
     root_ui().label(None, "Loading...");
     root_ui().label(None, "Tip: Press TAB for minimap");
+    root_ui().label(None, "Tip: Press P for Poincare view");
 }
 
 /// Main function.
