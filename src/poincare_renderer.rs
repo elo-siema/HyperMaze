@@ -1,10 +1,10 @@
 use crate::constants::_ASPECT_RATIO;
-use crate::{game::Game, utils::kleinpoint::*, utils::poincarepoint::*};
+use crate::{game::Game, utils::poincarepoint::*};
 use macroquad::camera::Camera2D;
 use macroquad::prelude::*;
 use nalgebra::base::*;
 
-/// Draws a top-down view on a Klein disk.
+/// Draws a top-down view on a Poincare disk.
 pub struct PoincareRenderer {}
 
 impl PoincareRenderer {
@@ -107,15 +107,6 @@ impl PoincareRenderer {
             0.005,
             YELLOW,
         );
-
-        //draw_line(
-        //    wall.beginning.0.x as f32,
-        //    wall.beginning.0.y as f32,
-        //    wall.end.0.x as f32,
-        //    wall.end.0.y as f32,
-        //    0.005,
-        //    BLUE,
-        //);
     }
 
     fn draw_object_poincare(&self, object: &PoincareObject) {
