@@ -6,6 +6,7 @@ use macroquad::ui::*;
 
 use crate::constants::*;
 use crate::game::hypermap::*;
+use crate::utils::hyperpoint::*;
 use crate::utils::kleinpoint::*;
 use crate::utils::point::Point;
 
@@ -43,6 +44,14 @@ impl Game {
     ///		- `distance:		The distance the player should be moved by.
     pub fn strafe_player(&mut self, distance: f64) {
         self.move_player_internal(0.0, distance);
+    }
+
+    pub fn place_sphere(&mut self) {
+        self.map.objects.push(HyperObject{
+            position: HyperPoint::new_at_origin(),
+            active: true
+        }
+        );
     }
 
     fn move_player_internal(&mut self, dx: f64, dy: f64) {

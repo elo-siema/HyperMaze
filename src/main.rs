@@ -107,6 +107,10 @@ async fn main() {
         if is_key_down(KEY_EXIT) {
             std::process::exit(0);
         }
+        if is_key_down(macroquad::prelude::KeyCode::O) {
+            println!("fsdfdsf");
+            game.place_sphere();
+        }
 
         game.tick();
 

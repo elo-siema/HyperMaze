@@ -5,7 +5,7 @@ use serde::{Deserialize};
 pub struct HyperMap {
     /// Walls of the map.
     walls: Vec<HyperWall>,
-    objects: Vec<HyperObject>,
+    pub objects: Vec<HyperObject>,
 }
 
 #[derive(Deserialize)]
